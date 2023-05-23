@@ -46,4 +46,4 @@ jobs:
     steps:
       - name: deploy run
         run: |
-          sh /home/ubuntu/dep/docker/run.sh
+          sh /home/ubuntu/dep/docker/member/run.sh
