@@ -21,5 +21,4 @@ public class ConfigController {
             log.info("Config Server 연결 성공 msg = {}", con);
         return con;
     }
-
 }
