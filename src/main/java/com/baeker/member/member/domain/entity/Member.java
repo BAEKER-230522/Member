@@ -1,6 +1,6 @@
 package com.baeker.member.member.domain.entity;
 
-import com.baeker.member.member.domain.entity.dto.BaekJoonDto;
+import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,14 +78,14 @@ public class Member extends BaseEntity {
     }
 
     // 백준 점수 최신화 //
-    public Member updateBaeJoon(BaekJoonDto dto) {
+    public Member updateSolvedCount(AddSolvedCountEvent event) {
         return this.toBuilder()
-                .bronze(this.getBronze() + dto.getBronze())
-                .sliver(this.getSliver() + dto.getSliver())
-                .gold(this.getGold() + dto.getGold())
-                .diamond(this.getDiamond() + dto.getDiamond())
-                .ruby(this.getRuby() + dto.getRuby())
-                .platinum(this.getPlatinum() + dto.getPlatinum())
+                .bronze(this.getBronze() + event.getBronze())
+                .sliver(this.getSliver() + event.getSliver())
+                .gold(this.getGold() + event.getGold())
+                .diamond(this.getDiamond() + event.getDiamond())
+                .ruby(this.getRuby() + event.getRuby())
+                .platinum(this.getPlatinum() + event.getPlatinum())
                 .build();
     }
 

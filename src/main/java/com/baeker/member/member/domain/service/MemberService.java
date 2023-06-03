@@ -2,6 +2,7 @@ package com.baeker.member.member.domain.service;
 
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
+import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.reqDto.ConBjReqDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
 import com.baeker.member.member.domain.entity.Member;
@@ -32,7 +33,7 @@ public class MemberService {
 
 
     /**
-     * * create method **
+     * * CREATE METHOD **
      * member 객체 생성
      */
 
@@ -52,7 +53,7 @@ public class MemberService {
 
 
     /**
-     * * read method **
+     * * READ METHOD **
      * find by username
      * find all + paging
      * find by id
@@ -118,8 +119,9 @@ public class MemberService {
 
 
     /**
-     * * Update method **
+     * * UPDATE METHOD **
      * nickname, about, profile img 수정
+     * evnet : Solved Count Update
      */
 
     //-- nickname, about, profile img 수정 --//
@@ -150,5 +152,12 @@ public class MemberService {
 
         Member updateMember = member.connectBaekJoon(dto.getBaekJoonName());
         return memberRepository.save(updateMember).getBaekJoonName();
+    }
+
+    //-- event : solved count update --//
+    public void addSolveCount(AddSolvedCountEvent event) {
+
+        Member member = this.findById(event.getId());
+        memberRepository.save(member.updateSolvedCount(event));
     }
 }
