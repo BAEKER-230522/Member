@@ -48,6 +48,8 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifyDate = _super.modifyDate;
 
+    public final ListPath<Long, NumberPath<Long>> myStudies = this.<Long, NumberPath<Long>>createList("myStudies", Long.class, NumberPath.class, PathInits.DIRECT2);
+
     public final BooleanPath newMember = createBoolean("newMember");
 
     public final StringPath nickname = createString("nickname");

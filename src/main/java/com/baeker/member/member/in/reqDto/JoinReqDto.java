@@ -12,4 +12,16 @@ public class JoinReqDto {
     private String email;
     private String token;
     private String profileImage;
+
+    public static JoinReqDto createJoinDto(String username, String nickName, String password, String provider, String email, String token, String profileImage) {
+        JoinReqDto dto = new JoinReqDto();
+        dto.username = username;
+        dto.nickName = nickName;
+        dto.password = password;
+        dto.provider = provider;
+        dto.email = email;
+        dto.token = token;
+        dto.profileImage = profileImage;
+        return dto;
+    }
 }

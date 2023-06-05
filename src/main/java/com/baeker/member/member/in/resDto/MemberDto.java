@@ -45,7 +45,7 @@ public class MemberDto {
         this.diamond = member.getDiamond();
         this.ruby = member.getRuby();
         this.platinum = member.getPlatinum();
-        this.solvedBaekJoon = member.solvedBaekJoon();
+        this.solvedBaekJoon = member.solvedCount();
         this.username = member.getUsername();
         this.nickname = member.getNickname();
         this.baekJoonName = member.getBaekJoonName();

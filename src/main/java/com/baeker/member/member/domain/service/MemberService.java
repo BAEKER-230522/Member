@@ -3,6 +3,7 @@ package com.baeker.member.member.domain.service;
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
+import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.ConBjReqDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
 import com.baeker.member.member.domain.entity.Member;
@@ -122,6 +123,7 @@ public class MemberService {
      * * UPDATE METHOD **
      * nickname, about, profile img 수정
      * evnet : Solved Count Update
+     * event : when create my study
      */
 
     //-- nickname, about, profile img 수정 --//
@@ -159,5 +161,11 @@ public class MemberService {
 
         Member member = this.findById(event.getId());
         memberRepository.save(member.updateSolvedCount(event));
+    }
+
+    //-- event : when create my study --//
+    public void createMyStudy(CreateMyStudyEvent event) {
+        Member member = this.findById(event.getMemberId());
+        member.addMyStudy(event.getMyStudyId());
     }
 }

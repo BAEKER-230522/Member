@@ -32,6 +32,10 @@ public class Member extends BaseEntity {
     private boolean newMember;
 
     @Builder.Default
+    @ElementCollection
+    private List<Long> myStudies = new ArrayList<>();
+
+    @Builder.Default
     @OneToMany(mappedBy = "member")
     private List<MemberSnapshot> snapshotList = new ArrayList<>();
 
@@ -96,5 +100,10 @@ public class Member extends BaseEntity {
                 .about(about)
                 .profileImg(profileImg)
                 .build();
+    }
+
+    // my study 추가 //
+    public void addMyStudy(Long myStudyId) {
+        this.myStudies.add(myStudyId);
     }
 }
