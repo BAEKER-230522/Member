@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -16,8 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class MemberServiceTest {
 
-    @Autowired private MemberService memberService;
-    @Autowired private ApplicationEventPublisher publisher;
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
 
     @Test
@@ -41,5 +45,10 @@ class MemberServiceTest {
 
         Member member = memberService.findById(createMember.getId());
         assertThat(member.getMyStudies().size()).isEqualTo(2);
+    }
+
+    @Test
+    void 백준_연동과_snapshot_생성() {
+
     }
 }

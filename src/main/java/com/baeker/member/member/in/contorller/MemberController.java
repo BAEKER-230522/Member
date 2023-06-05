@@ -45,15 +45,4 @@ public class MemberController {
         log.info("member update 완료");
         return RsData.successOf(response);
     }
-
-    //-- 백준 연동 --//
-//    @PostMapping("/v1/connect")
-//    public RsData conBk(@RequestBody @Valid ConBjReqDto dto) {
-//        log.info("백준 id 연동 요청 확인 id = {} / 백준 name = {}", dto.getId(), dto.getBaekJoonName());
-//
-//        String baekJoonName = memberService.conBj(dto);
-//        ConBjResDto response = new ConBjResDto(baekJoonName);
-//
-//        return RsData.successOf(response);
-//    }
 }

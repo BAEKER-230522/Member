@@ -2,10 +2,10 @@ package com.baeker.member.member.domain.service;
 
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
+import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
-import com.baeker.member.member.in.reqDto.ConBjReqDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.in.reqDto.PageReqDto;
@@ -13,6 +13,7 @@ import com.baeker.member.member.in.reqDto.UpdateReqDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
 import com.baeker.member.member.out.MemberQueryRepository;
 import com.baeker.member.member.out.MemberRepository;
+import com.baeker.member.member.out.SnapshotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
+    private final SnapshotRepository snapshotRepository;
 
 
     /**
@@ -153,6 +156,8 @@ public class MemberService {
         } catch (NotFoundException e) {
         }
 
+        this.updateSnapshot(member, event);
+
         Member updateMember = member.connectBaekJoon(event);
         return memberRepository.save(updateMember).getBaekJoonName();
     }
@@ -168,5 +173,23 @@ public class MemberService {
     public void createMyStudy(CreateMyStudyEvent event) {
         Member member = this.findById(event.getMemberId());
         member.addMyStudy(event.getMyStudyId());
+    }
+
+    // update snapshot //
+    private void updateSnapshot(Member member, ConBjEvent event) {
+        String today = LocalDateTime.now().getDayOfWeek().toString();
+        List<MemberSnapshot> snapshots = member.getSnapshotList();
+
+        if (snapshots.size() == 0 || !snapshots.get(0).getDayOfWeek().equals(today)) {
+            MemberSnapshot snapshot = MemberSnapshot.create(member, event, today);
+            snapshotRepository.save(snapshot);
+
+        }else{
+            MemberSnapshot snapshot = snapshots.get(0).update(event);
+            snapshotRepository.save(snapshot);
+        }
+
+        if (snapshots.size() == 8)
+            snapshots.remove(7);
     }
 }

@@ -39,4 +39,16 @@ public class MemberSnapshot extends BaseEntity{
         member.getSnapshotList().add(0, snapshot);
         return snapshot;
     }
+
+    //-- update score --//
+    public MemberSnapshot update(ConBjEvent event) {
+        return this.toBuilder()
+                .bronze(this.bronze + event.getBronze())
+                .sliver(this.sliver + event.getSliver())
+                .gold(this.gold + event.getGold())
+                .diamond(this.diamond + event.getDiamond())
+                .ruby(this.ruby + event.getRuby())
+                .platinum(this.platinum + event.getPlatinum())
+                .build();
+    }
 }

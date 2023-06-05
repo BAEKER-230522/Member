@@ -24,7 +24,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath about = createString("about");
 
-    public final StringPath baekJoonName = createString("baekJoonName");
+    //inherited
+    public final StringPath baekJoonName = _super.baekJoonName;
 
     //inherited
     public final NumberPath<Integer> bronze = _super.bronze;
