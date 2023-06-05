@@ -1,6 +1,7 @@
 package com.baeker.member.member.domain.entity;
 
 import com.baeker.member.member.in.event.ConBjEvent;
+import com.baeker.member.member.in.reqDto.BaekJoonDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
@@ -23,17 +24,17 @@ public class MemberSnapshot extends BaseEntity{
 
 
     //-- create score --//
-    public static MemberSnapshot create(Member member, ConBjEvent event, String dayOfWeek) {
+    public static MemberSnapshot create(Member member, BaekJoonDto dto, String dayOfWeek) {
         MemberSnapshot snapshot = MemberSnapshot.builder()
                 .member(member)
                 .baekJoonName(member.getBaekJoonName())
                 .dayOfWeek(dayOfWeek)
-                .bronze(event.getBronze())
-                .sliver(event.getSliver())
-                .gold(event.getGold())
-                .diamond(event.getDiamond())
-                .ruby(event.getRuby())
-                .platinum(event.getPlatinum())
+                .bronze(dto.getBronze())
+                .sliver(dto.getSliver())
+                .gold(dto.getGold())
+                .diamond(dto.getDiamond())
+                .ruby(dto.getRuby())
+                .platinum(dto.getPlatinum())
                 .build();
 
         member.getSnapshotList().add(0, snapshot);
@@ -41,14 +42,14 @@ public class MemberSnapshot extends BaseEntity{
     }
 
     //-- update score --//
-    public MemberSnapshot update(ConBjEvent event) {
+    public MemberSnapshot update(BaekJoonDto dto) {
         return this.toBuilder()
-                .bronze(this.bronze + event.getBronze())
-                .sliver(this.sliver + event.getSliver())
-                .gold(this.gold + event.getGold())
-                .diamond(this.diamond + event.getDiamond())
-                .ruby(this.ruby + event.getRuby())
-                .platinum(this.platinum + event.getPlatinum())
+                .bronze(this.bronze + dto.getBronze())
+                .sliver(this.sliver + dto.getSliver())
+                .gold(this.gold + dto.getGold())
+                .diamond(this.diamond + dto.getDiamond())
+                .ruby(this.ruby + dto.getRuby())
+                .platinum(this.platinum + dto.getPlatinum())
                 .build();
     }
 }

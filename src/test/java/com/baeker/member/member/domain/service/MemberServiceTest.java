@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,8 +28,7 @@ class MemberServiceTest {
 
     @Test
     void My_Study_추가_이벤트() {
-        JoinReqDto reqDto = JoinReqDto.createJoinDto("user", "member", "1234", "BAEKER", "aaa@aa.com", "123", "img");
-        Member createMember = memberService.create(reqDto);
+        Member createMember = createMember();
 
         Member findMember = memberService.findById(createMember.getId());
 
@@ -51,8 +49,7 @@ class MemberServiceTest {
 
     @Test
     void 백준_연동과_snapshot_생성() {
-        JoinReqDto reqDto = JoinReqDto.createJoinDto("user", "member", "1234", "BAEKER", "aaa@aa.com", "123", "img");
-        Member createMember = memberService.create(reqDto);
+        Member createMember = createMember();
 
         Member findMember = memberService.findById(createMember.getId());
         assertThat(findMember.solvedCount()).isEqualTo(0);
@@ -68,5 +65,17 @@ class MemberServiceTest {
         assertThat(findMember.solvedCount()).isEqualTo(6);
         assertThat(findMember.getSnapshotList().size()).isEqualTo(1);
         assertThat(findMember.getSnapshotList().size()).isEqualTo(allSnapshot.size());
+    }
+
+    @Test
+    void SolvedCount_최신화와_snapshot_생성_삭제() {
+
+    }
+
+
+    private Member createMember() {
+        JoinReqDto reqDto = JoinReqDto.createJoinDto("user", "member", "1234", "BAEKER", "aaa@aa.com", "123", "img");
+        Member createMember = memberService.create(reqDto);
+        return createMember;
     }
 }

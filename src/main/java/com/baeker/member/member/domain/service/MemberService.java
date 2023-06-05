@@ -6,6 +6,7 @@ import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
+import com.baeker.member.member.in.reqDto.BaekJoonDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.in.reqDto.PageReqDto;
@@ -135,6 +136,7 @@ public class MemberService {
      * event : 백준 연동
      * evnet : Solved Count Update
      * event : when create my study
+     * update snapshot
      */
 
     //-- nickname, about, profile img 수정 --//
@@ -162,7 +164,8 @@ public class MemberService {
         } catch (NotFoundException e) {
         }
 
-        this.updateSnapshot(member, event);
+        BaekJoonDto dto = new BaekJoonDto(event);
+        this.updateSnapshot(member, dto);
 
         Member updateMember = member.connectBaekJoon(event);
         return memberRepository.save(updateMember).getBaekJoonName();
@@ -172,6 +175,10 @@ public class MemberService {
     public void addSolvedCount(AddSolvedCountEvent event) {
 
         Member member = this.findById(event.getId());
+
+        BaekJoonDto dto = new BaekJoonDto(event);
+        this.updateSnapshot(member, dto);
+
         memberRepository.save(member.updateSolvedCount(event));
     }
 
@@ -182,16 +189,16 @@ public class MemberService {
     }
 
     // update snapshot //
-    private void updateSnapshot(Member member, ConBjEvent event) {
+    private void updateSnapshot(Member member, BaekJoonDto dto) {
         String today = LocalDateTime.now().getDayOfWeek().toString();
         List<MemberSnapshot> snapshots = member.getSnapshotList();
 
         if (snapshots.size() == 0 || !snapshots.get(0).getDayOfWeek().equals(today)) {
-            MemberSnapshot snapshot = MemberSnapshot.create(member, event, today);
+            MemberSnapshot snapshot = MemberSnapshot.create(member, dto, today);
             snapshotRepository.save(snapshot);
 
         }else{
-            MemberSnapshot snapshot = snapshots.get(0).update(event);
+            MemberSnapshot snapshot = snapshots.get(0).update(dto);
             snapshotRepository.save(snapshot);
         }
 
