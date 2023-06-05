@@ -1,6 +1,7 @@
 package com.baeker.member.member.domain.entity;
 
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
+import com.baeker.member.member.in.event.ConBjEvent;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,6 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String username;
     private String nickname;
-    private String baekJoonName;
     private String about;
     private String profileImg;
     private String kakaoProfileImage;
@@ -75,9 +75,15 @@ public class Member extends BaseEntity {
     }
 
     // 백준 아이디 등록 //
-    public Member connectBaekJoon(String baekJoonName) {
+    public Member connectBaekJoon(ConBjEvent event) {
         return this.toBuilder()
-                .baekJoonName(baekJoonName)
+                .baekJoonName(event.getBaekJoonName())
+                .bronze(event.getBronze())
+                .sliver(event.getSliver())
+                .gold(event.getGold())
+                .diamond(event.getDiamond())
+                .ruby(event.getRuby())
+                .platinum(event.getPlatinum())
                 .build();
     }
 

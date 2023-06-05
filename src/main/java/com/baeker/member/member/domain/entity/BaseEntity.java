@@ -27,6 +27,8 @@ public abstract class BaseEntity {
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
 
+    private String baekJoonName;
+
     int bronze;
     int sliver;
     int gold;

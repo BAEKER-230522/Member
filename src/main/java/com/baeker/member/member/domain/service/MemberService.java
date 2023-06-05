@@ -3,6 +3,7 @@ package com.baeker.member.member.domain.service;
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
+import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.ConBjReqDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
@@ -122,6 +123,7 @@ public class MemberService {
     /**
      * * UPDATE METHOD **
      * nickname, about, profile img 수정
+     * event : 백준 연동
      * evnet : Solved Count Update
      * event : when create my study
      */
@@ -140,24 +142,23 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    //-- 백준 연동 --//
-    @Transactional
-    public String conBJ(ConBjReqDto dto) {
+    //-- event : 백준 연동 --//
+    public String conBj(ConBjEvent event) {
 
-        Member member = this.findById(dto.getId());
+        Member member = this.findById(event.getId());
 
         try {
-            this.findByBaekJoonName(dto.getBaekJoonName());
-            throw new InvalidDuplicateException(dto.getBaekJoonName() + "은 이미 연동된 백준 id 입니다.");
+            this.findByBaekJoonName(event.getBaekJoonName());
+            throw new InvalidDuplicateException(event.getBaekJoonName() + "은 이미 연동된 백준 id 입니다.");
         } catch (NotFoundException e) {
         }
 
-        Member updateMember = member.connectBaekJoon(dto.getBaekJoonName());
+        Member updateMember = member.connectBaekJoon(event);
         return memberRepository.save(updateMember).getBaekJoonName();
     }
 
     //-- event : solved count update --//
-    public void addSolveCount(AddSolvedCountEvent event) {
+    public void addSolvedCount(AddSolvedCountEvent event) {
 
         Member member = this.findById(event.getId());
         memberRepository.save(member.updateSolvedCount(event));
