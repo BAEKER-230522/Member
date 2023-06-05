@@ -2,9 +2,11 @@ package com.baeker.member.member.in.reqDto;
 
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class BaekJoonDto {
 
     private Long id;

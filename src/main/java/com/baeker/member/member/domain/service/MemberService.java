@@ -202,7 +202,10 @@ public class MemberService {
             snapshotRepository.save(snapshot);
         }
 
-        if (snapshots.size() == 8)
-            snapshots.remove(7);
+        if (snapshots.size() == 8) {
+            MemberSnapshot snapshot = snapshots.get(7);
+            snapshots.remove(snapshot);
+            snapshotRepository.delete(snapshot);
+        }
     }
 }
