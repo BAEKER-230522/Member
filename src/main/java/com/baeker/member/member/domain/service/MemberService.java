@@ -63,6 +63,7 @@ public class MemberService {
      * find all + paging
      * find by id
      * find by 백준 name
+     * find all snapshot
      */
 
     //-- find by username --//
@@ -120,6 +121,11 @@ public class MemberService {
             return byBaekJoonName.get();
 
         throw new NotFoundException("존재하지 않는 백준 name / name = " + baekJoonName);
+    }
+
+    //-- find all snapshot --//
+    public List<MemberSnapshot> findAllSnapshot() {
+        return snapshotRepository.findAll();
     }
 
 
