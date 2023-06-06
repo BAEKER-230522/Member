@@ -66,7 +66,7 @@ class MemberServiceTest {
                 1, 1, 1, 1, 1, 1
         );
         publisher.publishEvent(event);
-        List<MemberSnapshot> allSnapshot = memberService.findAllSnapshot();
+        List<MemberSnapshot> allSnapshot = memberService.findAllSnapshot(findMember);
 
         assertThat(findMember.solvedCount()).isEqualTo(6);
         assertThat(findMember.getSnapshotList().size()).isEqualTo(1);
@@ -86,7 +86,7 @@ class MemberServiceTest {
                 1, 1, 1, 1, 1, 1
         );
         publisher.publishEvent(event);
-        List<MemberSnapshot> allSnapshot = memberService.findAllSnapshot();
+        List<MemberSnapshot> allSnapshot = memberService.findAllSnapshot(findMember);
 
         assertThat(findMember.solvedCount()).isEqualTo(12);
         assertThat(allSnapshot.size()).isEqualTo(1);
@@ -102,7 +102,7 @@ class MemberServiceTest {
         for (int i = 1; i < 7; i++)
             testSnapshot(findMember, i);
 
-        List<MemberSnapshot> allSnapshot = memberService.findAllSnapshot();
+        List<MemberSnapshot> allSnapshot = memberService.findAllSnapshot(findMember);
         assertThat(findMember.getSnapshotList().size()).isEqualTo(7);
         assertThat(allSnapshot.size()).isEqualTo(7);
 
@@ -112,13 +112,13 @@ class MemberServiceTest {
         );
         publisher.publishEvent(event);
 
-        List<MemberSnapshot> allSnapshot1 = memberService.findAllSnapshot();
+        List<MemberSnapshot> allSnapshot1 = memberService.findAllSnapshot(findMember);
         assertThat(findMember.getSnapshotList().size()).isEqualTo(7);
         assertThat(allSnapshot1.size()).isEqualTo(7);
 
         publisher.publishEvent(new AddSolvedCountEvent(this, member.getId(),1, 1, 1, 1, 1, 1));
 
-        List<MemberSnapshot> allSnapshot2 = memberService.findAllSnapshot();
+        List<MemberSnapshot> allSnapshot2 = memberService.findAllSnapshot(member);
         assertThat(findMember.getSnapshotList().size()).isEqualTo(7);
         assertThat(allSnapshot2.size()).isEqualTo(7);
 

@@ -12,6 +12,7 @@ import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.in.reqDto.PageReqDto;
 import com.baeker.member.member.in.reqDto.UpdateReqDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
+import com.baeker.member.member.in.resDto.SnapshotQueryRepository;
 import com.baeker.member.member.out.MemberQueryRepository;
 import com.baeker.member.member.out.MemberRepository;
 import com.baeker.member.member.out.SnapshotRepository;
@@ -36,6 +37,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final SnapshotRepository snapshotRepository;
+    private final SnapshotQueryRepository snapshotQueryRepository;
 
 
     /**
@@ -65,6 +67,7 @@ public class MemberService {
      * find by id
      * find by 백준 name
      * find all snapshot
+     * find today snapshot
      */
 
     //-- find by username --//
@@ -125,8 +128,13 @@ public class MemberService {
     }
 
     //-- find all snapshot --//
-    public List<MemberSnapshot> findAllSnapshot() {
-        return snapshotRepository.findAll();
+    public List<MemberSnapshot> findAllSnapshot(Member member) {
+        return snapshotQueryRepository.findByMemberId(member);
+    }
+
+    //-- find today snapshot --//
+    public MemberSnapshot findTodaySnapshot(Member member) {
+        return member.getSnapshotList().get(0);
     }
 
 

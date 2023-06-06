@@ -1,6 +1,5 @@
 package com.baeker.member.member.in.resDto;
 
-import com.baeker.member.member.domain.entity.Member;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 
@@ -15,7 +14,7 @@ public class SchedulerResDto {
     private int diamond;
     private int ruby;
     private int platinum;
-    private int solvedBaekJoon;
+    private int solvedCount;
 
     //-- get solved count --//
     private int getSolved() {
@@ -33,6 +32,6 @@ public class SchedulerResDto {
         this.diamond = diamond;
         this.ruby = ruby;
         this.platinum = platinum;
-        this.solvedBaekJoon = getSolved();
+        this.solvedCount = getSolved();
     }
 }
