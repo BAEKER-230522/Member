@@ -27,6 +27,8 @@ public abstract class BaseEntity {
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
 
+    private String baekJoonName;
+
     int bronze;
     int sliver;
     int gold;
@@ -34,7 +36,7 @@ public abstract class BaseEntity {
     int ruby;
     int platinum;
 
-    public int solvedBaekJoon() {
+    public int solvedCount() {
         return bronze + sliver + gold + diamond + ruby + platinum;
     }
 }

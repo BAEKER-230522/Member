@@ -25,10 +25,15 @@ public class QMemberSnapshot extends EntityPathBase<MemberSnapshot> {
     public final QBaseEntity _super = new QBaseEntity(this);
 
     //inherited
+    public final StringPath baekJoonName = _super.baekJoonName;
+
+    //inherited
     public final NumberPath<Integer> bronze = _super.bronze;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
+
+    public final StringPath dayOfWeek = createString("dayOfWeek");
 
     //inherited
     public final NumberPath<Integer> diamond = _super.diamond;

@@ -2,14 +2,20 @@ package com.baeker.member.member.domain.service;
 
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
-import com.baeker.member.member.in.reqDto.ConBjReqDto;
+import com.baeker.member.member.domain.entity.MemberSnapshot;
+import com.baeker.member.member.in.event.AddSolvedCountEvent;
+import com.baeker.member.member.in.event.ConBjEvent;
+import com.baeker.member.member.in.event.CreateMyStudyEvent;
+import com.baeker.member.member.in.reqDto.BaekJoonDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.in.reqDto.PageReqDto;
 import com.baeker.member.member.in.reqDto.UpdateReqDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
+import com.baeker.member.member.in.resDto.SnapshotQueryRepository;
 import com.baeker.member.member.out.MemberQueryRepository;
 import com.baeker.member.member.out.MemberRepository;
+import com.baeker.member.member.out.SnapshotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +36,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
+    private final SnapshotRepository snapshotRepository;
+    private final SnapshotQueryRepository snapshotQueryRepository;
 
 
     /**
-     * * create method **
+     * * CREATE METHOD **
      * member 객체 생성
      */
 
@@ -52,11 +61,13 @@ public class MemberService {
 
 
     /**
-     * * read method **
+     * * READ METHOD **
      * find by username
      * find all + paging
      * find by id
      * find by 백준 name
+     * find all snapshot
+     * find today snapshot
      */
 
     //-- find by username --//
@@ -116,10 +127,24 @@ public class MemberService {
         throw new NotFoundException("존재하지 않는 백준 name / name = " + baekJoonName);
     }
 
+    //-- find all snapshot --//
+    public List<MemberSnapshot> findAllSnapshot(Member member) {
+        return snapshotQueryRepository.findByMemberId(member);
+    }
+
+    //-- find today snapshot --//
+    public MemberSnapshot findTodaySnapshot(Member member) {
+        return member.getSnapshotList().get(0);
+    }
+
 
     /**
-     * * Update method **
+     * * UPDATE METHOD **
      * nickname, about, profile img 수정
+     * event : 백준 연동
+     * evnet : Solved Count Update
+     * event : when create my study
+     * update snapshot
      */
 
     //-- nickname, about, profile img 수정 --//
@@ -136,19 +161,59 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    //-- 백준 연동 --//
-    @Transactional
-    public String conBJ(ConBjReqDto dto) {
+    //-- event : 백준 연동 --//
+    public String conBj(ConBjEvent event) {
 
-        Member member = this.findById(dto.getId());
+        Member member = this.findById(event.getId());
 
         try {
-            this.findByBaekJoonName(dto.getBaekJoonName());
-            throw new InvalidDuplicateException(dto.getBaekJoonName() + "은 이미 연동된 백준 id 입니다.");
+            this.findByBaekJoonName(event.getBaekJoonName());
+            throw new InvalidDuplicateException(event.getBaekJoonName() + "은 이미 연동된 백준 id 입니다.");
         } catch (NotFoundException e) {
         }
 
-        Member updateMember = member.connectBaekJoon(dto.getBaekJoonName());
+        BaekJoonDto dto = new BaekJoonDto(event);
+        this.updateSnapshot(member, dto);
+
+        Member updateMember = member.connectBaekJoon(event);
         return memberRepository.save(updateMember).getBaekJoonName();
+    }
+
+    //-- event : solved count update --//
+    public void addSolvedCount(AddSolvedCountEvent event) {
+
+        Member member = this.findById(event.getId());
+
+        BaekJoonDto dto = new BaekJoonDto(event);
+        this.updateSnapshot(member, dto);
+
+        memberRepository.save(member.updateSolvedCount(event));
+    }
+
+    //-- event : when create my study --//
+    public void createMyStudy(CreateMyStudyEvent event) {
+        Member member = this.findById(event.getMemberId());
+        member.addMyStudy(event.getMyStudyId());
+    }
+
+    // update snapshot //
+    private void updateSnapshot(Member member, BaekJoonDto dto) {
+        String today = LocalDateTime.now().getDayOfWeek().toString();
+        List<MemberSnapshot> snapshots = member.getSnapshotList();
+
+        if (snapshots.size() == 0 || !snapshots.get(0).getDayOfWeek().equals(today)) {
+            MemberSnapshot snapshot = MemberSnapshot.create(member, dto, today);
+            snapshotRepository.save(snapshot);
+
+        }else{
+            MemberSnapshot snapshot = snapshots.get(0).update(dto);
+            snapshotRepository.save(snapshot);
+        }
+
+        if (snapshots.size() == 8) {
+            MemberSnapshot snapshot = snapshots.get(7);
+            snapshots.remove(snapshot);
+            snapshotRepository.delete(snapshot);
+        }
     }
 }

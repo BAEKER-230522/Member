@@ -2,10 +2,12 @@ package com.baeker.member.member.in.contorller;
 
 import com.baeker.member.base.request.RsData;
 import com.baeker.member.member.domain.entity.Member;
+import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.reqDto.PageReqDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
+import com.baeker.member.member.in.resDto.SnapshotResDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,5 +72,33 @@ public class MemberFindController {
 
         log.info("응답 완료 count = {} / page = {}", dtoList.size(), dto.getPage());
         return RsData.of("S-1", "count = " + dtoList.size(), dtoList);
+    }
+
+    //-- find today snapshot --//
+    @GetMapping("/v1/snapshot/today")
+    public RsData findTodaySnapshot(@RequestParam @Valid Long id) {
+        log.info("오늘 해결한 solved count 요청 확인 member id = {}", id);
+
+        Member member = memberService.findById(id);
+        MemberSnapshot snapshot = memberService.findTodaySnapshot(member);
+        SnapshotResDto resDto = new SnapshotResDto(snapshot);
+
+        log.info("오늘자 snapshot 응답 완료 day of week = {}", resDto.getDayOfWeek());
+        return RsData.successOf(resDto);
+    }
+
+    //-- find All snapshot --//
+    @GetMapping("/v1/snapshot/week")
+    public RsData findAllSnapshot(@RequestParam @Valid Long id) {
+        log.info("일주일간 해결한 solved count 요청 확인 member id = {}", id);
+
+        Member member = memberService.findById(id);
+        List<SnapshotResDto> resDtoList = memberService.findAllSnapshot(member)
+                .stream()
+                .map(s -> new SnapshotResDto(s))
+                .toList();
+
+        log.info("Snapshot 일주일 분 응답 완료 size = {}", resDtoList.size());
+        return RsData.of("S-1", "Dto Size = " + resDtoList.size(), resDtoList);
     }
 }

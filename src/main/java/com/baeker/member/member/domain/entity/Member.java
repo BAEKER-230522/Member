@@ -1,6 +1,7 @@
 package com.baeker.member.member.domain.entity;
 
-import com.baeker.member.member.domain.entity.dto.BaekJoonDto;
+import com.baeker.member.member.in.event.AddSolvedCountEvent;
+import com.baeker.member.member.in.event.ConBjEvent;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,6 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String username;
     private String nickname;
-    private String baekJoonName;
     private String about;
     private String profileImg;
     private String kakaoProfileImage;
@@ -30,6 +30,10 @@ public class Member extends BaseEntity {
     private String email;
     private String token;
     private boolean newMember;
+
+    @Builder.Default
+    @ElementCollection
+    private List<Long> myStudies = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "member")
@@ -71,21 +75,27 @@ public class Member extends BaseEntity {
     }
 
     // 백준 아이디 등록 //
-    public Member connectBaekJoon(String baekJoonName) {
+    public Member connectBaekJoon(ConBjEvent event) {
         return this.toBuilder()
-                .baekJoonName(baekJoonName)
+                .baekJoonName(event.getBaekJoonName())
+                .bronze(event.getBronze())
+                .sliver(event.getSliver())
+                .gold(event.getGold())
+                .diamond(event.getDiamond())
+                .ruby(event.getRuby())
+                .platinum(event.getPlatinum())
                 .build();
     }
 
     // 백준 점수 최신화 //
-    public Member updateBaeJoon(BaekJoonDto dto) {
+    public Member updateSolvedCount(AddSolvedCountEvent event) {
         return this.toBuilder()
-                .bronze(this.getBronze() + dto.getBronze())
-                .sliver(this.getSliver() + dto.getSliver())
-                .gold(this.getGold() + dto.getGold())
-                .diamond(this.getDiamond() + dto.getDiamond())
-                .ruby(this.getRuby() + dto.getRuby())
-                .platinum(this.getPlatinum() + dto.getPlatinum())
+                .bronze(this.getBronze() + event.getBronze())
+                .sliver(this.getSliver() + event.getSliver())
+                .gold(this.getGold() + event.getGold())
+                .diamond(this.getDiamond() + event.getDiamond())
+                .ruby(this.getRuby() + event.getRuby())
+                .platinum(this.getPlatinum() + event.getPlatinum())
                 .build();
     }
 
@@ -96,5 +106,10 @@ public class Member extends BaseEntity {
                 .about(about)
                 .profileImg(profileImg)
                 .build();
+    }
+
+    // my study 추가 //
+    public void addMyStudy(Long myStudyId) {
+        this.myStudies.add(myStudyId);
     }
 }

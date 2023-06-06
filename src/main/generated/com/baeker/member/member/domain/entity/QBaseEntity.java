@@ -19,6 +19,8 @@ public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
     public static final QBaseEntity baseEntity = new QBaseEntity("baseEntity");
 
+    public final StringPath baekJoonName = createString("baekJoonName");
+
     public final NumberPath<Integer> bronze = createNumber("bronze", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);

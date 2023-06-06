@@ -30,10 +30,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok' // Lombok
 	compileOnly 'org.projectlombok:lombok' // Lombok
 
-	// Spring Config
-	implementation 'org.springframework.boot:spring-boot-starter-actuator' // Actuator
-	implementation 'org.springframework.cloud:spring-cloud-starter-config' // Config
-
 	// api 호출
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
@@ -45,7 +41,7 @@ dependencies {
 
 	// Database
 	runtimeOnly 'com.h2database:h2' // Test DB
-	runtimeOnly 'com.mysql:mysql-connector-j' // Dev DB
+	runtimeOnly 'com.mysql:mysql-connector-j' // Main DB
 
 	// QueryDsl
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
