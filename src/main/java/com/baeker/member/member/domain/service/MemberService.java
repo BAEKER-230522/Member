@@ -6,11 +6,8 @@ import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
-import com.baeker.member.member.in.reqDto.BaekJoonDto;
-import com.baeker.member.member.in.reqDto.JoinReqDto;
+import com.baeker.member.member.in.reqDto.*;
 import com.baeker.member.member.domain.entity.Member;
-import com.baeker.member.member.in.reqDto.PageReqDto;
-import com.baeker.member.member.in.reqDto.UpdateReqDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
 import com.baeker.member.member.in.resDto.SnapshotQueryRepository;
 import com.baeker.member.member.out.MemberQueryRepository;
@@ -141,6 +138,8 @@ public class MemberService {
     /**
      * * UPDATE METHOD **
      * nickname, about, profile img 수정
+     * update my study
+     * delete my study
      * event : 백준 연동
      * evnet : Solved Count Update
      * event : when create my study
@@ -159,6 +158,29 @@ public class MemberService {
                 );
 
         return memberRepository.save(member);
+    }
+
+    //-- update my study --//
+    @Transactional
+    public Member updateMyStudy(MyStudyReqDto dto) {
+        Member member = this.findById(dto.getMemberId());
+
+        if (member.getMyStudies().contains(dto.getMyStudyId()))
+            throw new InvalidDuplicateException("이미 등록된 my study / my study id = " + dto.getMyStudyId());
+
+        return member.updateMyStudy(dto.getMyStudyId());
+    }
+
+    //-- delete my study --//
+    @Transactional
+    public Member deleteMyStudy(MyStudyReqDto dto) {
+        Member member = this.findById(dto.getMemberId());
+
+        if (!member.getMyStudies().contains(dto.getMyStudyId()))
+            throw new NotFoundException("존재하지 않는 my study id / id = " + dto.getMyStudyId());
+
+        member.getMyStudies().remove(dto.getMyStudyId());
+        return member;
     }
 
     //-- event : 백준 연동 --//
@@ -205,7 +227,7 @@ public class MemberService {
             MemberSnapshot snapshot = MemberSnapshot.create(member, dto, today);
             snapshotRepository.save(snapshot);
 
-        }else{
+        } else {
             MemberSnapshot snapshot = snapshots.get(0).update(dto);
             snapshotRepository.save(snapshot);
         }

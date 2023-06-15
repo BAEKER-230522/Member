@@ -26,7 +26,7 @@ public class MemberFindController {
 
     //-- find by username --//
     @GetMapping("/v1/username")
-    public RsData findByUsername(@RequestParam @Valid String username) {
+    public RsData<MemberDto> findByUsername(@RequestParam @Valid String username) {
         log.info("find by username 요청 확인 /  username = {}", username);
         Member member = memberService.findByUsername(username);
 
@@ -38,7 +38,7 @@ public class MemberFindController {
 
     //-- find by id --//
     @GetMapping("/v1/id")
-    public RsData findById(@RequestParam @Valid Long id) {
+    public RsData<MemberDto> findById(@RequestParam @Valid Long id) {
         log.info("find by id 요청 확인 / id = {}", id);
         Member member = memberService.findById(id);
 
@@ -51,7 +51,7 @@ public class MemberFindController {
 
     //-- find all for scheduler--//
     @GetMapping("/v1/all")
-    public RsData findAllForScheduler() {
+    public RsData<List<SchedulerResDto>> findAllForScheduler() {
         log.info("모든 Member 조회 요청 확인");
 
         List<SchedulerResDto> dtoList = memberService.findAllConBJ();
@@ -62,7 +62,7 @@ public class MemberFindController {
 
     //-- find all for paging --//
     @GetMapping("/v1/pageAll")
-    public RsData findAll(@ModelAttribute @Valid PageReqDto dto) {
+    public RsData<List<MemberDto>> findAll(@ModelAttribute @Valid PageReqDto dto) {
         log.info("find all 페이징 요청 확인 / page = {}", dto.getPage());
 
         List<MemberDto> dtoList = memberService.getAll(dto)
@@ -76,7 +76,7 @@ public class MemberFindController {
 
     //-- find today snapshot --//
     @GetMapping("/v1/snapshot/today")
-    public RsData findTodaySnapshot(@RequestParam @Valid Long id) {
+    public RsData<SnapshotResDto> findTodaySnapshot(@RequestParam @Valid Long id) {
         log.info("오늘 해결한 solved count 요청 확인 member id = {}", id);
 
         Member member = memberService.findById(id);
@@ -89,7 +89,7 @@ public class MemberFindController {
 
     //-- find All snapshot --//
     @GetMapping("/v1/snapshot/week")
-    public RsData findAllSnapshot(@RequestParam @Valid Long id) {
+    public RsData<List<SnapshotResDto>> findAllSnapshot(@RequestParam @Valid Long id) {
         log.info("일주일간 해결한 solved count 요청 확인 member id = {}", id);
 
         Member member = memberService.findById(id);
