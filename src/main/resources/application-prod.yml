@@ -1,12 +1,18 @@
 spring:
-  profiles:
-    default:
+  config:
+    activate:
+      on-profile: prod
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/rule_table?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
-    username: ENC(2YU6LNDHEJnF8RREJdgJSw==)
-    password: ENC(qD+HJEqvHbu4eN/2sn0log==)
+    url: jdbc:mysql://database-1.cfjq3dvnnxge.ap-northeast-2.rds.amazonaws.com:3306/member?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ENC(plDde76MscNwKMt9v4A6Rw==)
+    password: ENC(OH+qshDPtFh1h1gDdWExzz/t0BlOzVbo)
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
 
 custom:
   server: ENC(w10K+s4EnEwDbAxgBF+dbNEpajaAseXA)
