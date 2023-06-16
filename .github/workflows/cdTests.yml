@@ -42,4 +42,4 @@ jobs:
     steps:
       - name: deploy run
         run: |
-          sh /home1/nbpmon/member/dep/run.sh
+          sh /home1/ubpmon/member/dep/run.sh
