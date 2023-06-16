@@ -2,6 +2,11 @@ server:
   port: 8081
 
 spring:
+  profiles:
+    default:
+
+  application:
+    name: baeker-member
 
   mvc:
     hidden-method:
@@ -22,10 +27,24 @@ spring:
         format_sql: true
         show_sql: true
 
+eureka:
+  instance:
+
+    # IP 와 서버 포트를 통해 Id 설정
+    instance-id: ${custom.server}:${server.port}
+
+  client:
+    service-url:
+      # Eureka 서버 주소 (만약 2개 이상일경우 , 를 통해 연속 입력)
+      defaultZone: http://${custom.server}:8761/eureka
+
 logging.level:
   org.hibernate:
     SQL: debug
     orm.jdbc.bind: trace
+
+custom:
+  server: localhost
 
 jasypt:
   encryptor:

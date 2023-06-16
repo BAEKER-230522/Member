@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    default:
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/rule_table?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    username: ENC(2YU6LNDHEJnF8RREJdgJSw==)
+    password: ENC(qD+HJEqvHbu4eN/2sn0log==)
+
+custom:
+  server: ENC(w10K+s4EnEwDbAxgBF+dbNEpajaAseXA)
+

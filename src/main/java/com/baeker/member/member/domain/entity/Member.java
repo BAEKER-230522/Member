@@ -112,4 +112,10 @@ public class Member extends BaseEntity {
     public void addMyStudy(Long myStudyId) {
         this.myStudies.add(myStudyId);
     }
+
+    // my study update //
+    public Member updateMyStudy(Long myStudyId) {
+        this.myStudies.add(myStudyId);
+        return this;
+    }
 }
