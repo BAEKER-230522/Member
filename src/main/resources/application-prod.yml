@@ -11,8 +11,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
-
+      ddl-auto: update
 
 custom:
   server: ENC(w10K+s4EnEwDbAxgBF+dbNEpajaAseXA)
