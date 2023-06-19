@@ -11,7 +11,6 @@ import com.baeker.member.member.in.resDto.SnapshotResDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -99,6 +98,20 @@ public class MemberFindController {
                 .toList();
 
         log.info("Snapshot 일주일 분 응답 완료 size = {}", resDtoList.size());
+        return RsData.of("S-1", "Dto Size = " + resDtoList.size(), resDtoList);
+    }
+
+    //-- find all --//
+    @GetMapping("/v1/all-members")
+    public RsData<List<MemberDto>> findAllMembers() {
+        log.info("모든 맴버 리스트 요청 확인");
+
+        List<MemberDto> resDtoList = memberService.finAll()
+                .stream()
+                .map(m -> new MemberDto(m))
+                .toList();
+
+        log.info("모든 member 응답 완료 count = {}", resDtoList.size());
         return RsData.of("S-1", "Dto Size = " + resDtoList.size(), resDtoList);
     }
 }

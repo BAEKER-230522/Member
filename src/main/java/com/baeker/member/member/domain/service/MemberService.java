@@ -60,6 +60,7 @@ public class MemberService {
     /**
      * * READ METHOD **
      * find by username
+     * find all
      * find all + paging
      * find by id
      * find by 백준 name
@@ -75,6 +76,11 @@ public class MemberService {
             return byUsername.get();
 
         throw new NotFoundException("존재하지 않는 username");
+    }
+
+    //-- find all --//
+    public List<Member> finAll() {
+        return memberRepository.findAll();
     }
 
     //-- find all + paging --//

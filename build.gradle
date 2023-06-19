@@ -33,6 +33,9 @@ dependencies {
 	// api 호출
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+
 	// spring doc open api
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
