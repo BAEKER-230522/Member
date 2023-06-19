@@ -28,15 +28,23 @@ spring:
         show_sql: true
 
   kafka:
-    bootstrap-servers: ENC(V7ZQ6ejRGHvYoSUQbPa4mrc5dxRDh6IKg1Z9tLyOKmY=)
+    bootstrap-servers: ${custom.server}:9092
     consumer:
-      group-id: foo
+      group-id: member
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      linger:
+        ms: 10
+
+message:
+  topic:
+    member: "member"
+    study: "study"
+    solved-member: "solved-member"
 
 eureka:
   instance:

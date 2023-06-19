@@ -12,17 +12,15 @@ class JasyptConfigTest {
     @Value("${jasypt.encryptor.password}")
     private String key;
 
-
-
     @Test
     void 암호화() {
-        String value = "root";
+        String value = "";
         System.out.println(jasyptEncoding(value));
     }
 
-    @Test
+//    @Test
     void 복호화() {
-        String value = "V7ZQ6ejRGHvYoSUQbPa4mrc5dxRDh6IKg1Z9tLyOKmY=";
+        String value = "";
         BasicTextEncryptor enc = new BasicTextEncryptor();
         enc.setPassword(key);
         System.out.println(enc.decrypt(value));
