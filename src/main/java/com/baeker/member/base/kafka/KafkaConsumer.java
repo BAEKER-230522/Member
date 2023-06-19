@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 
 @Slf4j
-@Service
+//@Service
 @RequiredArgsConstructor
 public class KafkaConsumer {
 
