@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    default: prod
+    default:
 
   application:
     name: baeker-member
@@ -26,6 +26,17 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
+  kafka:
+    bootstrap-servers: ENC(V7ZQ6ejRGHvYoSUQbPa4mrc5dxRDh6IKg1Z9tLyOKmY=)
+    consumer:
+      group-id: foo
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 eureka:
   instance:
