@@ -18,9 +18,9 @@ class JasyptConfigTest {
         System.out.println(jasyptEncoding(value));
     }
 
-//    @Test
+    @Test
     void 복호화() {
-        String value = "";
+        String value = "w10K+s4EnEwDbAxgBF+dbNEpajaAseXA";
         BasicTextEncryptor enc = new BasicTextEncryptor();
         enc.setPassword(key);
         System.out.println(enc.decrypt(value));
