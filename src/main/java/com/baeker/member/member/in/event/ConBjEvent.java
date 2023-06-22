@@ -10,18 +10,18 @@ public class ConBjEvent extends ApplicationEvent {
     private String baekJoonName;
 
     int bronze;
-    int sliver;
+    int silver;
     int gold;
     int diamond;
     int ruby;
     int platinum;
 
-    public ConBjEvent(Object source, Long memberId, String baekJoonName, int bronze, int sliver, int gold, int diamond, int ruby, int platinum) {
+    public ConBjEvent(Object source, Long memberId, String baekJoonName, int bronze, int silver, int gold, int diamond, int ruby, int platinum) {
         super(source);
         this.id = memberId;
         this.baekJoonName = baekJoonName;
         this.bronze = bronze;
-        this.sliver = sliver;
+        this.silver = silver;
         this.gold = gold;
         this.diamond = diamond;
         this.ruby = ruby;

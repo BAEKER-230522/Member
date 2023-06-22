@@ -16,7 +16,7 @@ public class MemberDto {
     private LocalDateTime modifyDate;
 
     int bronze;
-    int sliver;
+    int silver;
     int gold;
     int diamond;
     int ruby;
@@ -26,7 +26,6 @@ public class MemberDto {
     private String username;
     private String nickname;
     private String baekJoonName;
-    private String password;
     private String about;
     private String profileImg;
     private String kakaoProfileImage;
@@ -40,7 +39,7 @@ public class MemberDto {
         this.createDate = member.getCreateDate();
         this.modifyDate = member.getModifyDate();
         this.bronze = member.getBronze();
-        this.sliver = member.getSliver();
+        this.silver = member.getSilver();
         this.gold = member.getGold();
         this.diamond = member.getDiamond();
         this.ruby = member.getRuby();
@@ -50,7 +49,6 @@ public class MemberDto {
         this.nickname = member.getNickname();
         this.baekJoonName = member.getBaekJoonName();
         this.about = member.getAbout();
-        this.password = member.getPassword();
         this.profileImg = member.getProfileImg();
         this.kakaoProfileImage = member.getKakaoProfileImage();
         this.provider = member.getProvider();

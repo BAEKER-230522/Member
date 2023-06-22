@@ -79,7 +79,7 @@ public class Member extends BaseEntity {
         return this.toBuilder()
                 .baekJoonName(event.getBaekJoonName())
                 .bronze(event.getBronze())
-                .sliver(event.getSliver())
+                .silver(event.getSilver())
                 .gold(event.getGold())
                 .diamond(event.getDiamond())
                 .ruby(event.getRuby())
@@ -91,7 +91,7 @@ public class Member extends BaseEntity {
     public Member updateSolvedCount(AddSolvedCountEvent event) {
         return this.toBuilder()
                 .bronze(this.getBronze() + event.getBronze())
-                .sliver(this.getSliver() + event.getSliver())
+                .silver(this.getSilver() + event.getSilver())
                 .gold(this.getGold() + event.getGold())
                 .diamond(this.getDiamond() + event.getDiamond())
                 .ruby(this.getRuby() + event.getRuby())

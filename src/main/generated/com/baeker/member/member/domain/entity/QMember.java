@@ -68,7 +68,7 @@ public class QMember extends EntityPathBase<Member> {
     public final NumberPath<Integer> ruby = _super.ruby;
 
     //inherited
-    public final NumberPath<Integer> sliver = _super.sliver;
+    public final NumberPath<Integer> silver = _super.silver;
 
     public final ListPath<MemberSnapshot, QMemberSnapshot> snapshotList = this.<MemberSnapshot, QMemberSnapshot>createList("snapshotList", MemberSnapshot.class, QMemberSnapshot.class, PathInits.DIRECT2);
 

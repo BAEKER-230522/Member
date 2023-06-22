@@ -25,7 +25,7 @@ public class MemberQueryRepository {
         QMember m = QMember.member;
 
         return query
-                .select(new QSchedulerResDto(m.id, m.baekJoonName, m.bronze, m.sliver, m.gold, m.diamond, m.ruby, m.platinum))
+                .select(new QSchedulerResDto(m.id, m.baekJoonName, m.bronze, m.silver, m.gold, m.diamond, m.ruby, m.platinum))
                 .from(m)
                 .where(m.baekJoonName.isNotNull())
                 .fetch();
