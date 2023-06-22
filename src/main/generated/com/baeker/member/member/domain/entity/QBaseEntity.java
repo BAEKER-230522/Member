@@ -37,7 +37,7 @@ public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
     public final NumberPath<Integer> ruby = createNumber("ruby", Integer.class);
 
-    public final NumberPath<Integer> sliver = createNumber("sliver", Integer.class);
+    public final NumberPath<Integer> silver = createNumber("silver", Integer.class);
 
     public QBaseEntity(String variable) {
         super(BaseEntity.class, forVariable(variable));

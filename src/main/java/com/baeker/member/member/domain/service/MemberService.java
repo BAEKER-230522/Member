@@ -137,6 +137,11 @@ public class MemberService {
 
     //-- find today snapshot --//
     public MemberSnapshot findTodaySnapshot(Member member) {
+        List<MemberSnapshot> snapshots = member.getSnapshotList();
+
+        if (snapshots.size() == 0)
+            throw new NotFoundException("백준 연동이 되어있지 않은 회원 입니다.");
+
         return member.getSnapshotList().get(0);
     }
 

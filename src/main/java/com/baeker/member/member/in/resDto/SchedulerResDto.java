@@ -9,7 +9,7 @@ public class SchedulerResDto {
     private Long id;
     private String baekJoonName;
     private int bronze;
-    private int sliver;
+    private int silver;
     private int gold;
     private int diamond;
     private int ruby;
@@ -18,16 +18,16 @@ public class SchedulerResDto {
 
     //-- get solved count --//
     private int getSolved() {
-        return bronze + sliver + gold + diamond + ruby + platinum;
+        return bronze + silver + gold + diamond + ruby + platinum;
     }
 
     //-- mapping query dsl --//
     @QueryProjection
-    public SchedulerResDto(Long id, String baekJoonName, int bronze, int sliver, int gold, int diamond, int ruby, int platinum) {
+    public SchedulerResDto(Long id, String baekJoonName, int bronze, int silver, int gold, int diamond, int ruby, int platinum) {
         this.id = id;
         this.baekJoonName = baekJoonName;
         this.bronze = bronze;
-        this.sliver = sliver;
+        this.silver = silver;
         this.gold = gold;
         this.diamond = diamond;
         this.ruby = ruby;

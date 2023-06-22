@@ -13,7 +13,7 @@ public class BaekJoonDto {
     private String baekJoonName;
 
     int bronze;
-    int sliver;
+    int silver;
     int gold;
     int diamond;
     int ruby;
@@ -23,7 +23,7 @@ public class BaekJoonDto {
         this.id = event.getId();
         this.baekJoonName = event.getBaekJoonName();
         this.bronze = event.getBronze();
-        this.sliver = event.getSliver();
+        this.silver = event.getSilver();
         this.gold = event.getGold();
         this.diamond = event.getDiamond();
         this.ruby = event.getRuby();
@@ -33,7 +33,7 @@ public class BaekJoonDto {
     public BaekJoonDto(AddSolvedCountEvent event) {
         this.id = event.getId();
         this.bronze = event.getBronze();
-        this.sliver = event.getSliver();
+        this.silver = event.getSilver();
         this.gold = event.getGold();
         this.diamond = event.getDiamond();
         this.ruby = event.getRuby();

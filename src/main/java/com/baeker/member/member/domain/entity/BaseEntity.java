@@ -30,13 +30,13 @@ public abstract class BaseEntity {
     private String baekJoonName;
 
     int bronze;
-    int sliver;
+    int silver;
     int gold;
     int diamond;
     int ruby;
     int platinum;
 
     public int solvedCount() {
-        return bronze + sliver + gold + diamond + ruby + platinum;
+        return bronze + silver + gold + diamond + ruby + platinum;
     }
 }

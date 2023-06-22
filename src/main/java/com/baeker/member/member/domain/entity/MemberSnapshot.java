@@ -30,7 +30,7 @@ public class MemberSnapshot extends BaseEntity{
                 .baekJoonName(member.getBaekJoonName())
                 .dayOfWeek(dayOfWeek)
                 .bronze(dto.getBronze())
-                .sliver(dto.getSliver())
+                .silver(dto.getSilver())
                 .gold(dto.getGold())
                 .diamond(dto.getDiamond())
                 .ruby(dto.getRuby())
@@ -45,7 +45,7 @@ public class MemberSnapshot extends BaseEntity{
     public MemberSnapshot update(BaekJoonDto dto) {
         return this.toBuilder()
                 .bronze(this.bronze + dto.getBronze())
-                .sliver(this.sliver + dto.getSliver())
+                .silver(this.silver + dto.getSilver())
                 .gold(this.gold + dto.getGold())
                 .diamond(this.diamond + dto.getDiamond())
                 .ruby(this.ruby + dto.getRuby())
