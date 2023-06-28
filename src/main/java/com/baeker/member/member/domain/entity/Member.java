@@ -2,6 +2,7 @@ package com.baeker.member.member.domain.entity;
 
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
+import com.baeker.member.member.in.reqDto.JoinReqDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,17 +41,17 @@ public class Member extends BaseEntity {
     private List<MemberSnapshot> snapshotList = new ArrayList<>();
 
     //-- crate method --//
-    public static Member createMember(String provider, String username, String nickname, String about, String password, String profileImg, String email, String token) {
+    public static Member createMember(JoinReqDto dto) {
         return builder()
-                .provider(provider)
-                .username(username)
-                .nickname(nickname)
-                .about(about)
-                .password(password)
-                .profileImg(profileImg)
-                .kakaoProfileImage(profileImg)
-                .email(email)
-                .token(token)
+                .provider(dto.getProvider())
+                .username(dto.getUsername())
+                .nickname(dto.getNickName())
+                .about(dto.getToken())
+                .password(dto.getPassword())
+                .profileImg(dto.getProfileImage())
+                .kakaoProfileImage(dto.getProfileImage())
+                .email(dto.getEmail())
+                .token(dto.getToken())
                 .newMember(true)
                 .build();
     }

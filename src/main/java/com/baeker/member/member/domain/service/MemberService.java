@@ -1,7 +1,11 @@
 package com.baeker.member.member.domain.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
+import com.baeker.member.base.s3.S3Config;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
@@ -20,7 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +41,14 @@ public class MemberService {
     private final MemberQueryRepository memberQueryRepository;
     private final SnapshotRepository snapshotRepository;
     private final SnapshotQueryRepository snapshotQueryRepository;
+    private final AmazonS3 amazonS3;
+    private final S3Config s3Config;
 
 
     /**
      * * CREATE METHOD **
      * member 객체 생성
+     * s3 upload
      */
 
     //-- create member --//
@@ -52,8 +61,37 @@ public class MemberService {
         } catch (NotFoundException e) {
         }
 
-        Member member = Member.createMember(dto.getProvider(), dto.getUsername(), dto.getNickName(), "", dto.getPassword(), dto.getProfileImage(), dto.getEmail(), dto.getToken());
+        Member member = Member.createMember(dto);
+
         return memberRepository.save(member);
+    }
+
+    // S3 upload //
+    private String s3Upload(MultipartFile file, Long id) {
+
+        String name = "profile_img" + id;
+        String url = "https://s3." + s3Config.getRegion()
+                + ".amazonaws.com/" + s3Config.getBucket()
+                + "/" + s3Config.getStorage()
+                + "/" + name;
+
+        try {
+            ObjectMetadata data = new ObjectMetadata();
+            data.setContentType(file.getContentType());
+            data.setContentLength(file.getSize());
+
+            amazonS3.putObject(new PutObjectRequest(
+                    s3Config.getBucket(),
+                    s3Config.getStorage() + "/" + name,
+                    file.getInputStream(),
+                    data
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            throw new NullPointerException("프로필 이미지가 없습니다.");
+        }
+        return url;
     }
 
 

@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -31,6 +32,19 @@ public class MemberController {
 
         log.info("member 생성 완료 member id = {}", member.getId());
         return RsData.successOf(createMemberDto);
+    }
+
+    //-- file test --//
+    @PostMapping("/v1/img")
+    public RsData file(@RequestParam MultipartFile file) {
+        log.info("바인딩 성공");
+        return RsData.successOf(file.getContentType());
+    }
+
+    @PostMapping("/v1/text")
+    public RsData text(@RequestParam String text) {
+        log.info("바인딩 성공");
+        return RsData.successOf(text);
     }
 
     //-- update 닉네임, 소개,프로필 사진 --//
