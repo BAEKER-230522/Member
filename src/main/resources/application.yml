@@ -40,6 +40,20 @@ spring:
       linger:
         ms: 10
 
+cloud:
+  aws:
+    credentials:
+      access-key: ENC(STIByR/5dds/1MwRIrr0M9JR2yx4wX/OzrBusb1TRuM=)
+      secret-key: ENC(aUDadAx1wtJza2duGCwYmYJ04lzNi33fjA8fHtde1qyeWrshkvrvdMtIFtLn5jKy1Adj7UmMTPM=)
+    s3:
+      bucket: ${custom.bucket}
+      storage: ${custom.storage}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+
 message:
   topic:
     member: "member"
@@ -67,6 +81,8 @@ logging.level:
 
 custom:
   server: localhost
+  storage: local
+  bucket: baeker-local
 
 jasypt:
   encryptor:

@@ -1,7 +1,11 @@
 package com.baeker.member.member.domain.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
+import com.baeker.member.base.s3.S3Config;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
@@ -20,7 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +41,14 @@ public class MemberService {
     private final MemberQueryRepository memberQueryRepository;
     private final SnapshotRepository snapshotRepository;
     private final SnapshotQueryRepository snapshotQueryRepository;
+    private final AmazonS3 amazonS3;
+    private final S3Config s3Config;
 
 
     /**
      * * CREATE METHOD **
      * member 객체 생성
+     * s3 upload
      */
 
     //-- create member --//
@@ -52,7 +61,8 @@ public class MemberService {
         } catch (NotFoundException e) {
         }
 
-        Member member = Member.createMember(dto.getProvider(), dto.getUsername(), dto.getNickName(), "", dto.getPassword(), dto.getProfileImage(), dto.getEmail(), dto.getToken());
+        Member member = Member.createMember(dto);
+
         return memberRepository.save(member);
     }
 
@@ -151,10 +161,12 @@ public class MemberService {
      * nickname, about, profile img 수정
      * update my study
      * delete my study
+     * update profile img
      * event : 백준 연동
      * evnet : Solved Count Update
      * event : when create my study
      * update snapshot
+     * s3 upload
      */
 
     //-- nickname, about, profile img 수정 --//
@@ -179,7 +191,7 @@ public class MemberService {
         if (member.getMyStudies().contains(dto.getMyStudyId()))
             throw new InvalidDuplicateException("이미 등록된 my study / my study id = " + dto.getMyStudyId());
 
-        return member.updateMyStudy(dto.getMyStudyId());
+        return memberRepository.save(member.updateMyStudy(dto.getMyStudyId()));
     }
 
     //-- delete my study --//
@@ -192,6 +204,16 @@ public class MemberService {
 
         member.getMyStudies().remove(dto.getMyStudyId());
         return member;
+    }
+
+    //-- update profile img --//
+    @Transactional
+    public Member updateImg(MultipartFile img, Long id) {
+        Member member = this.findById(id);
+
+        String profileImg = s3Upload(img, id);
+
+        return memberRepository.save(member.updateProfileImg(profileImg));
     }
 
     //-- event : 백준 연동 --//
@@ -248,5 +270,33 @@ public class MemberService {
             snapshots.remove(snapshot);
             snapshotRepository.delete(snapshot);
         }
+    }
+
+    // S3 upload //
+    private String s3Upload(MultipartFile file, Long id) {
+
+        String name = "profile_img" + id;
+        String url = "https://s3." + s3Config.getRegion()
+                + ".amazonaws.com/" + s3Config.getBucket()
+                + "/" + s3Config.getStorage()
+                + "/" + name;
+
+        try {
+            ObjectMetadata data = new ObjectMetadata();
+            data.setContentType(file.getContentType());
+            data.setContentLength(file.getSize());
+
+            amazonS3.putObject(new PutObjectRequest(
+                    s3Config.getBucket(),
+                    s3Config.getStorage() + "/" + name,
+                    file.getInputStream(),
+                    data
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            throw new NullPointerException("프로필 이미지가 없습니다.");
+        }
+        return url;
     }
 }

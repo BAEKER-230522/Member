@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -54,6 +55,20 @@ public class MemberController {
 
         log.info("my study 등록 완료");
         return RsData.of("S-1", "my study size - " + member.getMyStudies().size());
+    }
+
+    //-- update profile img --//
+    @PostMapping("/v1/profile-img/{id}")
+    public RsData updateProfileImg(
+            @PathVariable Long id,
+            @RequestPart MultipartFile img
+    ) {
+        log.info("profile img 수정 요청 확인");
+
+        Member member = memberService.updateImg(img, id);
+
+        log.info("profile img 수정 완료");
+        return RsData.of("S-1", " 이미지 update 완료", member.getProfileImg());
     }
 
     //-- delete my study --//

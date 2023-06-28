@@ -2,6 +2,7 @@ package com.baeker.member.member.domain.entity;
 
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
+import com.baeker.member.member.in.reqDto.JoinReqDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -40,17 +42,17 @@ public class Member extends BaseEntity {
     private List<MemberSnapshot> snapshotList = new ArrayList<>();
 
     //-- crate method --//
-    public static Member createMember(String provider, String username, String nickname, String about, String password, String profileImg, String email, String token) {
+    public static Member createMember(JoinReqDto dto) {
         return builder()
-                .provider(provider)
-                .username(username)
-                .nickname(nickname)
-                .about(about)
-                .password(password)
-                .profileImg(profileImg)
-                .kakaoProfileImage(profileImg)
-                .email(email)
-                .token(token)
+                .provider(dto.getProvider())
+                .username(dto.getUsername())
+                .nickname(dto.getNickName())
+                .about(dto.getToken())
+                .password(dto.getPassword())
+                .profileImg(dto.getProfileImage())
+                .kakaoProfileImage(dto.getProfileImage())
+                .email(dto.getEmail())
+                .token(dto.getToken())
                 .newMember(true)
                 .build();
     }
@@ -64,7 +66,7 @@ public class Member extends BaseEntity {
                 .nickname(name)
                 .about(about)
                 .profileImg(img)
-                .modifyDate(LocalDateTime.now())
+                .modifyDate(now())
                 .newMember(false)
                 .build();
     }
@@ -105,6 +107,7 @@ public class Member extends BaseEntity {
                 .nickname(nickname)
                 .about(about)
                 .profileImg(profileImg)
+                .modifyDate(now())
                 .build();
     }
 
@@ -115,7 +118,19 @@ public class Member extends BaseEntity {
 
     // my study update //
     public Member updateMyStudy(Long myStudyId) {
-        this.myStudies.add(myStudyId);
-        return this;
+        Member member = this.toBuilder()
+                .modifyDate(now())
+                .build();
+
+        member.myStudies.add(myStudyId);
+        return member;
+    }
+
+    // profile img update //
+    public Member updateProfileImg(String profileImg) {
+        return this.toBuilder()
+                .profileImg(profileImg)
+                .modifyDate(now())
+                .build();
     }
 }
