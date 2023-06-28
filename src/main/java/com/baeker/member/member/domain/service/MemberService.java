@@ -191,7 +191,7 @@ public class MemberService {
         if (member.getMyStudies().contains(dto.getMyStudyId()))
             throw new InvalidDuplicateException("이미 등록된 my study / my study id = " + dto.getMyStudyId());
 
-        return member.updateMyStudy(dto.getMyStudyId());
+        return memberRepository.save(member.updateMyStudy(dto.getMyStudyId()));
     }
 
     //-- delete my study --//
@@ -208,12 +208,12 @@ public class MemberService {
 
     //-- update profile img --//
     @Transactional
-    public void updateImg(MultipartFile img, Long id) {
+    public Member updateImg(MultipartFile img, Long id) {
         Member member = this.findById(id);
 
         String profileImg = s3Upload(img, id);
 
-        member.updateProfileImg(profileImg);
+        return memberRepository.save(member.updateProfileImg(profileImg));
     }
 
     //-- event : 백준 연동 --//

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -65,7 +66,7 @@ public class Member extends BaseEntity {
                 .nickname(name)
                 .about(about)
                 .profileImg(img)
-                .modifyDate(LocalDateTime.now())
+                .modifyDate(now())
                 .newMember(false)
                 .build();
     }
@@ -106,6 +107,7 @@ public class Member extends BaseEntity {
                 .nickname(nickname)
                 .about(about)
                 .profileImg(profileImg)
+                .modifyDate(now())
                 .build();
     }
 
@@ -116,12 +118,19 @@ public class Member extends BaseEntity {
 
     // my study update //
     public Member updateMyStudy(Long myStudyId) {
-        this.myStudies.add(myStudyId);
-        return this;
+        Member member = this.toBuilder()
+                .modifyDate(now())
+                .build();
+
+        member.myStudies.add(myStudyId);
+        return member;
     }
 
     // profile img update //
-    public void updateProfileImg(String profileImg) {
-        this.profileImg = profileImg;
+    public Member updateProfileImg(String profileImg) {
+        return this.toBuilder()
+                .profileImg(profileImg)
+                .modifyDate(now())
+                .build();
     }
 }

@@ -65,10 +65,10 @@ public class MemberController {
     ) {
         log.info("profile img 수정 요청 확인");
 
-        memberService.updateImg(img, id);
+        Member member = memberService.updateImg(img, id);
 
         log.info("profile img 수정 완료");
-        return RsData.of("S-1", img.getName() + " 로 이미지 update 완료");
+        return RsData.of("S-1", " 이미지 update 완료", member.getProfileImg());
     }
 
     //-- delete my study --//
