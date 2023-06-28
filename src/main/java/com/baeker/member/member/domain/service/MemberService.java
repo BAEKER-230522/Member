@@ -66,34 +66,6 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    // S3 upload //
-    private String s3Upload(MultipartFile file, Long id) {
-
-        String name = "profile_img" + id;
-        String url = "https://s3." + s3Config.getRegion()
-                + ".amazonaws.com/" + s3Config.getBucket()
-                + "/" + s3Config.getStorage()
-                + "/" + name;
-
-        try {
-            ObjectMetadata data = new ObjectMetadata();
-            data.setContentType(file.getContentType());
-            data.setContentLength(file.getSize());
-
-            amazonS3.putObject(new PutObjectRequest(
-                    s3Config.getBucket(),
-                    s3Config.getStorage() + "/" + name,
-                    file.getInputStream(),
-                    data
-            ));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            throw new NullPointerException("프로필 이미지가 없습니다.");
-        }
-        return url;
-    }
-
 
     /**
      * * READ METHOD **
@@ -189,10 +161,12 @@ public class MemberService {
      * nickname, about, profile img 수정
      * update my study
      * delete my study
+     * update profile img
      * event : 백준 연동
      * evnet : Solved Count Update
      * event : when create my study
      * update snapshot
+     * s3 upload
      */
 
     //-- nickname, about, profile img 수정 --//
@@ -230,6 +204,16 @@ public class MemberService {
 
         member.getMyStudies().remove(dto.getMyStudyId());
         return member;
+    }
+
+    //-- update profile img --//
+    @Transactional
+    public void updateImg(MultipartFile img, Long id) {
+        Member member = this.findById(id);
+
+        String profileImg = s3Upload(img, id);
+
+        member.updateProfileImg(profileImg);
     }
 
     //-- event : 백준 연동 --//
@@ -286,5 +270,33 @@ public class MemberService {
             snapshots.remove(snapshot);
             snapshotRepository.delete(snapshot);
         }
+    }
+
+    // S3 upload //
+    private String s3Upload(MultipartFile file, Long id) {
+
+        String name = "profile_img" + id;
+        String url = "https://s3." + s3Config.getRegion()
+                + ".amazonaws.com/" + s3Config.getBucket()
+                + "/" + s3Config.getStorage()
+                + "/" + name;
+
+        try {
+            ObjectMetadata data = new ObjectMetadata();
+            data.setContentType(file.getContentType());
+            data.setContentLength(file.getSize());
+
+            amazonS3.putObject(new PutObjectRequest(
+                    s3Config.getBucket(),
+                    s3Config.getStorage() + "/" + name,
+                    file.getInputStream(),
+                    data
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            throw new NullPointerException("프로필 이미지가 없습니다.");
+        }
+        return url;
     }
 }

@@ -34,19 +34,6 @@ public class MemberController {
         return RsData.successOf(createMemberDto);
     }
 
-    //-- file test --//
-    @PostMapping("/v1/img")
-    public RsData file(@RequestParam MultipartFile file) {
-        log.info("바인딩 성공");
-        return RsData.successOf(file.getContentType());
-    }
-
-    @PostMapping("/v1/text")
-    public RsData text(@RequestParam String text) {
-        log.info("바인딩 성공");
-        return RsData.successOf(text);
-    }
-
     //-- update 닉네임, 소개,프로필 사진 --//
     @PostMapping("/v1/update")
     public RsData<UpdateResDto> update(@RequestBody @Valid UpdateReqDto dto) {
@@ -68,6 +55,20 @@ public class MemberController {
 
         log.info("my study 등록 완료");
         return RsData.of("S-1", "my study size - " + member.getMyStudies().size());
+    }
+
+    //-- update profile img --//
+    @PostMapping("/v1/profile-img/{id}")
+    public RsData updateProfileImg(
+            @PathVariable Long id,
+            @RequestPart MultipartFile img
+    ) {
+        log.info("profile img 수정 요청 확인");
+
+        memberService.updateImg(img, id);
+
+        log.info("profile img 수정 완료");
+        return RsData.of("S-1", img.getName() + " 로 이미지 update 완료");
     }
 
     //-- delete my study --//

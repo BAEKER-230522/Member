@@ -119,4 +119,9 @@ public class Member extends BaseEntity {
         this.myStudies.add(myStudyId);
         return this;
     }
+
+    // profile img update //
+    public void updateProfileImg(String profileImg) {
+        this.profileImg = profileImg;
+    }
 }
