@@ -40,11 +40,11 @@ spring:
       linger:
         ms: 10
 
-#message:
-#  topic:
-#    member: "member"
-#    study: "study"
-#    solved-member: "solved-member"
+message:
+  topic:
+    member: "member"
+    study: "study"
+    solved-member: "solved-member"
 
 eureka:
   instance:
