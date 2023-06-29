@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    default:
+    default: dev
 
   application:
     name: baeker-member
@@ -80,7 +80,7 @@ logging.level:
     orm.jdbc.bind: trace
 
 custom:
-  server: ENC(0zWdK1NtpOSg0B/P5gqfGe+3WBULxDvm)
+  server: 101.101.208.240
   storage: ENC(ILubO430i175pGOuVoODag==)
   bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
   feign:
