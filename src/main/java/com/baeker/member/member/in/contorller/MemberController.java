@@ -34,6 +34,20 @@ public class MemberController {
         return RsData.successOf(createMemberDto);
     }
 
+    //-- 백준 id 연동 --//
+    @PostMapping("/v1/connect/baekjoon/{id}")
+    public RsData connect(
+            @PathVariable Long id,
+            @RequestParam @Valid String name
+    ) {
+        log.info("member 백준 id 연동 요청 확인 id = {}, baekjoon name = {}", id, name);
+
+        Member member = memberService.connectBaekjoon(id, name);
+
+        log.info("member 백준 id 연동 성공");
+        return RsData.successOf(member.getId());
+    }
+
     //-- update 닉네임, 소개,프로필 사진 --//
     @PostMapping("/v1/update")
     public RsData<UpdateResDto> update(@RequestBody @Valid UpdateReqDto dto) {

@@ -81,8 +81,11 @@ logging.level:
 
 custom:
   server: localhost
+  test: 101.101.208.240
   storage: local
   bucket: baeker-local
+  feign:
+    solved: http://${custom.test}:8084/api/solved
 
 jasypt:
   encryptor:
