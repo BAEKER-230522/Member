@@ -12,8 +12,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
-custom:
-  server: ENC(w10K+s4EnEwDbAxgBF+dbNEpajaAseXA)
-  storage: ENC(ILubO430i175pGOuVoODag==)
-  bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)

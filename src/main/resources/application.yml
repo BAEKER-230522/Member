@@ -80,9 +80,9 @@ logging.level:
     orm.jdbc.bind: trace
 
 custom:
-  server: localhost
-  storage: local
-  bucket: baeker-local
+  server: ENC(0zWdK1NtpOSg0B/P5gqfGe+3WBULxDvm)
+  storage: ENC(ILubO430i175pGOuVoODag==)
+  bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
   feign:
     solved: http://${custom.server}:8084/api/solved
 

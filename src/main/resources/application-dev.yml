@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+custom:
+  server: localhost
+  storage: local
+  bucket: baeker-local
