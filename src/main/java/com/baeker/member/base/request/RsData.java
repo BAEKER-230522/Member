@@ -1,12 +1,13 @@
 package com.baeker.member.base.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 public class RsData<T> {
 
     private String resultCode;

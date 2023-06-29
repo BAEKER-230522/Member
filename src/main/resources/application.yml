@@ -83,6 +83,8 @@ custom:
   server: localhost
   storage: local
   bucket: baeker-local
+  feign:
+    solved: http://${custom.server}:8084/api/solved
 
 jasypt:
   encryptor:

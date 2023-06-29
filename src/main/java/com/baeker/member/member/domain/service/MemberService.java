@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.baeker.member.base.exception.InvalidDuplicateException;
 import com.baeker.member.base.exception.NotFoundException;
+import com.baeker.member.base.request.RsData;
 import com.baeker.member.base.s3.S3Config;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
@@ -17,7 +18,10 @@ import com.baeker.member.member.in.resDto.SnapshotQueryRepository;
 import com.baeker.member.member.out.MemberQueryRepository;
 import com.baeker.member.member.out.MemberRepository;
 import com.baeker.member.member.out.SnapshotRepository;
+import com.baeker.member.member.out.feign.SolvedAcClient;
+import com.baeker.member.member.out.resDto.ConBaekjoonResDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +45,8 @@ public class MemberService {
     private final MemberQueryRepository memberQueryRepository;
     private final SnapshotRepository snapshotRepository;
     private final SnapshotQueryRepository snapshotQueryRepository;
+    private final ApplicationEventPublisher publisher;
+    private final SolvedAcClient solvedAcClient;
     private final AmazonS3 amazonS3;
     private final S3Config s3Config;
 
@@ -214,6 +220,18 @@ public class MemberService {
         String profileImg = s3Upload(img, id);
 
         return memberRepository.save(member.updateProfileImg(profileImg));
+    }
+
+    @Transactional
+    public Member connectBaekjoon(Long id, String name) {
+        RsData<ConBaekjoonResDto> resDto = solvedAcClient.validName(name);
+
+        if (resDto.isFail())
+            throw new NotFoundException("존재하지 않는 백준 이름입니다.");
+
+        publisher.publishEvent(new ConBjEvent(this, id, name, resDto.getData()));
+
+        return this.findById(id);
     }
 
     //-- event : 백준 연동 --//
