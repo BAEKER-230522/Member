@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
                 .provider(dto.getProvider())
                 .username(dto.getUsername())
                 .nickname(dto.getNickName())
-                .about(dto.getToken())
+                .about("")
                 .password(dto.getPassword())
                 .profileImg(dto.getProfileImage())
                 .kakaoProfileImage(dto.getProfileImage())
