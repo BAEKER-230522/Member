@@ -20,6 +20,7 @@ import com.baeker.member.member.out.MemberRepository;
 import com.baeker.member.member.out.SnapshotRepository;
 import com.baeker.member.member.out.feign.SolvedAcClient;
 import com.baeker.member.member.out.resDto.ConBaekjoonResDto;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -224,14 +225,14 @@ public class MemberService {
 
     @Transactional
     public Member connectBaekjoon(Long id, String name) {
-        RsData<ConBaekjoonResDto> resDto = solvedAcClient.validName(name);
 
-        if (resDto.isFail())
+        try {
+            RsData<ConBaekjoonResDto> resDto = solvedAcClient.validName(name);
+            publisher.publishEvent(new ConBjEvent(this, id, name, resDto.getData()));
+            return this.findById(id);
+        } catch (FeignException e) {
             throw new NotFoundException("존재하지 않는 백준 이름입니다.");
-
-        publisher.publishEvent(new ConBjEvent(this, id, name, resDto.getData()));
-
-        return this.findById(id);
+        }
     }
 
     //-- event : 백준 연동 --//

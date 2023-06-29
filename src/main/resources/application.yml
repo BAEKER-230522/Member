@@ -84,7 +84,7 @@ custom:
   storage: ENC(ILubO430i175pGOuVoODag==)
   bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
   feign:
-    solved: http://${custom.server}:8084/api/solved
+    solved: http://101.101.208.240:8084/api/solved
 
 jasypt:
   encryptor:
