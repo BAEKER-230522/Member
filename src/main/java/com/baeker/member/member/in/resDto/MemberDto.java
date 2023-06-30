@@ -1,20 +1,23 @@
 package com.baeker.member.member.in.resDto;
 
 import com.baeker.member.member.domain.entity.Member;
+import com.baeker.member.member.domain.entity.QMember;
+import com.querydsl.core.annotations.QueryProjection;
+import com.querydsl.core.types.dsl.NumberPath;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class MemberDto {
 
     private Long id;
-
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
-
     int bronze;
     int silver;
     int gold;
@@ -22,7 +25,6 @@ public class MemberDto {
     int ruby;
     int platinum;
     int solvedBaekJoon;
-
     private String username;
     private String nickname;
     private String baekJoonName;
@@ -55,5 +57,29 @@ public class MemberDto {
         this.email = member.getEmail();
         this.token = member.getToken();
         this.newMember = true;
+    }
+
+    @QueryProjection
+    public MemberDto(Long id, LocalDateTime createDate, LocalDateTime modifyDate, int bronze, int silver, int gold, int diamond, int ruby, int platinum, String username, String nickname, String baekJoonName, String about, String profileImg, String kakaoProfileImage, String provider, String email, String token, boolean newMember) {
+        this.id = id;
+        this.createDate = createDate;
+        this.modifyDate = modifyDate;
+        this.bronze = bronze;
+        this.silver = silver;
+        this.gold = gold;
+        this.diamond = diamond;
+        this.ruby = ruby;
+        this.platinum = platinum;
+        this.username = username;
+        this.nickname = nickname;
+        this.baekJoonName = baekJoonName;
+        this.about = about;
+        this.profileImg = profileImg;
+        this.kakaoProfileImage = kakaoProfileImage;
+        this.provider = provider;
+        this.email = email;
+        this.token = token;
+        this.newMember = newMember;
+        this.solvedBaekJoon = bronze + silver + gold + diamond + ruby + platinum;
     }
 }

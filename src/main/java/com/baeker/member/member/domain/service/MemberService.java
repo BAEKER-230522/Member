@@ -13,6 +13,7 @@ import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.*;
 import com.baeker.member.member.domain.entity.Member;
+import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
 import com.baeker.member.member.in.resDto.SnapshotQueryRepository;
 import com.baeker.member.member.out.MemberQueryRepository;
@@ -80,6 +81,7 @@ public class MemberService {
      * find all
      * find all + paging
      * find by id
+     * find by member id list
      * find by 백준 name
      * find all snapshot
      * find today snapshot
@@ -135,6 +137,11 @@ public class MemberService {
             return byId.get();
 
         throw new NotFoundException("존재하지 않는 id / id = " + id);
+    }
+
+    //-- find by member id list --//
+    public List<MemberDto> findByMyStudyList(List<Long> memberIds) {
+        return memberQueryRepository.findByMemberList(memberIds);
     }
 
     //-- find by 백준 name --//

@@ -4,10 +4,12 @@ import com.baeker.member.base.request.RsData;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.domain.service.MemberService;
+import com.baeker.member.member.in.reqDto.MembersReqDto;
 import com.baeker.member.member.in.reqDto.PageReqDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
 import com.baeker.member.member.in.resDto.SnapshotResDto;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -113,5 +115,20 @@ public class MemberFindController {
 
         log.info("모든 member 응답 완료 count = {}", resDtoList.size());
         return RsData.of("S-1", "Dto Size = " + resDtoList.size(), resDtoList);
+    }
+
+    //-- find by my study list --//
+    @PostMapping("/v1/id/list")
+    @Operation(summary = "server 간 통신에 사용되는 api 입니다.")
+    public RsData<List<MemberDto>> findListByMyStudy(
+            @RequestBody MembersReqDto dto
+    ) {
+        List<Long> myStudyList = dto.getMembers();
+        log.info("member list 요청 확인 list size = {}", myStudyList.size());
+
+        List<MemberDto> resDtoList = memberService.findByMyStudyList(myStudyList);
+
+        log.info("member list 응답 완료 list size = {}", resDtoList.size());
+        return RsData.successOf(resDtoList);
     }
 }
