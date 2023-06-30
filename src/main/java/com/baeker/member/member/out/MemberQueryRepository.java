@@ -31,8 +31,8 @@ public class MemberQueryRepository {
     }
 
     //-- id list 로 member list 조회 --//
-    public List<MemberDto> findByMemberList(List<Long> memberIds) {
-        return query
+    public List<MemberDto> findByMemberList(List<Long> memberIds, String status) {
+        List<MemberDto> result = query
                 .select(new QMemberDto(
                         m.id,
                         m.createDate,
@@ -57,6 +57,9 @@ public class MemberQueryRepository {
                 .from(m)
                 .where(m.id.in(memberIds))
                 .fetch();
+
+        for (MemberDto dto : result) dto.setStatus(status);
+        return result;
     }
 }
 

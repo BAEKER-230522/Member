@@ -35,6 +35,7 @@ public class MemberDto {
     private String email;
     private String token;
     private boolean newMember;
+    private String status;
 
     public MemberDto(Member member) {
         this.id = member.getId();

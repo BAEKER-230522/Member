@@ -140,8 +140,8 @@ public class MemberService {
     }
 
     //-- find by member id list --//
-    public List<MemberDto> findByMyStudyList(List<Long> memberIds) {
-        return memberQueryRepository.findByMemberList(memberIds);
+    public List<MemberDto> findByMyStudyList(List<Long> memberIds, String status) {
+        return memberQueryRepository.findByMemberList(memberIds, status);
     }
 
     //-- find by 백준 name --//

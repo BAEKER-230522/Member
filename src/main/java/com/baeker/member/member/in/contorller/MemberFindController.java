@@ -126,7 +126,7 @@ public class MemberFindController {
         List<Long> myStudyList = dto.getMembers();
         log.info("member list 요청 확인 list size = {}", myStudyList.size());
 
-        List<MemberDto> resDtoList = memberService.findByMyStudyList(myStudyList);
+        List<MemberDto> resDtoList = memberService.findByMyStudyList(myStudyList, dto.getStatus());
 
         log.info("member list 응답 완료 list size = {}", resDtoList.size());
         return RsData.successOf(resDtoList);
