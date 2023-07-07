@@ -64,6 +64,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath provider = createString("provider");
 
+    public final StringPath providerType = createString("providerType");
+
     //inherited
     public final NumberPath<Integer> ruby = _super.ruby;
 

@@ -8,9 +8,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 import static lombok.AccessLevel.PROTECTED;
@@ -32,6 +37,8 @@ public class Member extends BaseEntity {
     private String email;
     private String token;
     private boolean newMember;
+    private String providerType; // 현재는 Kakao 만 있지만 확장성 고려하여 추가
+
 
     @Builder.Default
     @ElementCollection
@@ -132,5 +139,32 @@ public class Member extends BaseEntity {
                 .profileImg(profileImg)
                 .modifyDate(now())
                 .build();
+    }
+
+
+    /**
+     * 추가한 부분
+     */
+
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+
+        // 모든 회원에게 member 권한 부여 //
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        // admin 권한 부여 //
+        if ("admin".equals(username))
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        return grantedAuthorities;
+    }
+
+    public Map<String, Object> toClaims() {
+        return Map.of(
+                "id", getId(),
+                "username", getUsername(),
+                "nickname", getNickname()
+        );
     }
 }

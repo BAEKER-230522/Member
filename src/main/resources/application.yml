@@ -8,6 +8,30 @@ spring:
   application:
     name: baeker-member
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://kauth.kakao.com/.well-known/jwks.json
+      client:
+        registration:
+          kakao:
+            clientId: ENC(0HCojoXJI2AP2Y71MdgjJ8uH7iJLBtyBEOtBkTrteQMu46fZXaJRcikg1KQLA4US)
+            client-secret: ENC(Wv7Qf1vhum0OG8DS6XF3fvPxWk8mMsd75TdRzcxN3IsFMc2uHjsF50jm7cNHgsFO)
+            scope: account_email, profile_nickname, profile_image, openid
+            client-name: kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: http://${custom.server}:8081/login/oauth2/code/kakao
+            client-authentication-method: POST
+
+        provider:
+          kakao:
+            jwk-set-uri: https://kauth.kakao.com/.well-known/jwks.json
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v1/oidc/userinfo
+#            user-name-attribute: openid
+            issuer-uri: https://kauth.kakao.com
   mvc:
     hidden-method:
       filter:
@@ -89,3 +113,4 @@ custom:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+

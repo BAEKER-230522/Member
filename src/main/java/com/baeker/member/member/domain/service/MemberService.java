@@ -30,13 +30,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.stream.events.Characters;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -324,5 +327,53 @@ public class MemberService {
             throw new NullPointerException("프로필 이미지가 없습니다.");
         }
         return url;
+    }
+
+    /**
+     * 소셜 로그인 추가
+     * @param providerType
+     * @param username
+     * @param email
+     * @return
+     */
+    @Transactional
+    public Member whenSocialLogin(String providerType, String username, String email, String profileImg) {
+
+        Member member = null;
+        try {
+            member = findByUsername(username);
+        } catch (NotFoundException e) {
+            return socialJoin(providerType, username, "", email, profileImg); // 최초 1회 실행
+        }
+        return member;
+    }
+
+
+    public Member socialJoin(String providerType, String username, String password, String email, String profileImg) {
+        Member member = null;
+
+        try {
+            member = findByUsername(username);
+            return member;
+        } catch (NotFoundException e) {
+            JoinReqDto dto = new JoinReqDto();
+            dto.setUsername(username);
+            dto.setEmail(email);
+            dto.setPassword(password);
+//            JoinReqDto dto = JoinReqDto.createJoinDto(username, ,password, email);
+            dto.setProvider(providerType);
+            dto.setProfileImage(profileImg);
+//            dto.setToken(token);
+
+            member = create(dto);
+        }
+
+
+        // 닉네임을 랜덤으로 생성
+
+
+        memberRepository.save(member);
+
+        return member;
     }
 }
