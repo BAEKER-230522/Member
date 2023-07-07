@@ -41,9 +41,12 @@ public abstract class AbstractOAuth2UserService {
         if(user == null){
             ClientRegistration clientRegistration = userRequest.getClientRegistration();
             userService.register(clientRegistration.getRegistrationId(),providerUser);
-            providerUser.getEmail();
-            providerUser.getPicture();
-            memberService.whenSocialLogin(providerUser.getProvider(), providerUser.getUsername(),providerUser.getEmail());
+            String provider = providerUser.getProvider();
+            String email = providerUser.getEmail();
+            String profileImg = providerUser.getPicture();
+            String username = providerUser.getUsername();
+
+            memberService.whenSocialLogin(provider, username, email, profileImg);
 
         }else{
             System.out.println("userRequest = " + userRequest);

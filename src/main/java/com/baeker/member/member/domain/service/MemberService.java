@@ -337,19 +337,19 @@ public class MemberService {
      * @return
      */
     @Transactional
-    public Member whenSocialLogin(String providerType, String username, String email) {
+    public Member whenSocialLogin(String providerType, String username, String email, String profileImg) {
 
         Member member = null;
         try {
             member = findByUsername(username);
         } catch (NotFoundException e) {
-            return socialJoin(providerType, username, "", email); // 최초 1회 실행
+            return socialJoin(providerType, username, "", email, profileImg); // 최초 1회 실행
         }
         return member;
     }
 
 
-    public Member socialJoin(String providerType, String username, String password, String email) {
+    public Member socialJoin(String providerType, String username, String password, String email, String profileImg) {
         Member member = null;
 
         try {
@@ -362,6 +362,7 @@ public class MemberService {
             dto.setPassword(password);
 //            JoinReqDto dto = JoinReqDto.createJoinDto(username, ,password, email);
             dto.setProvider(providerType);
+            dto.setProfileImage(profileImg);
 //            dto.setToken(token);
 
             member = create(dto);
@@ -369,8 +370,6 @@ public class MemberService {
 
 
         // 닉네임을 랜덤으로 생성
-//        String randomUUID = UUID.randomUUID().toString().replaceAll("-", "");
-//        String nickname = providerType + "__" + randomUUID.substring(0, 6); // 6자리까지만 사용
 
 
         memberRepository.save(member);
