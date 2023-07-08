@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Component
@@ -42,6 +44,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         member = memberService.findByUsername(user.getName());
 
         Map<String, String> tokens = jwtTokenProvider.genAccessTokenAndRefreshToken(member);
-        response.sendRedirect(FRONT_URL + "?token=" + tokens);
+
+        String accessToken = tokens.get("accessToken");
+        String refreshToken = tokens.get("refreshToken");
+        String url = FRONT_URL + "?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
+                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
+        response.sendRedirect(url);
     }
 }

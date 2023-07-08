@@ -88,7 +88,8 @@ public class JwtTokenProvider {
     public Map<String, String> genAccessTokenAndRefreshToken(Member member) {
         String accessToken = genToken(member.toClaims(), ACCESS_TOKEN_VALIDATION_SECOND);
         String refreshToken = genToken(member.toClaims(), REFRESH_TOKEN_VALIDATION_SECOND);
-        redisUt.setValue(member.getId(), refreshToken, REFRESH_TOKEN_VALIDATION_SECOND);
+        String key = String.valueOf(member.getId());
+        redisUt.setValue(key, refreshToken, REFRESH_TOKEN_VALIDATION_SECOND);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
