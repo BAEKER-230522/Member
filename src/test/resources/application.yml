@@ -50,6 +50,8 @@ cloud:
       auto: false
 
 custom:
+  front:
+    url: http://localhost:3000
   server: localhost
   storage: local
   bucket: baeker-local
