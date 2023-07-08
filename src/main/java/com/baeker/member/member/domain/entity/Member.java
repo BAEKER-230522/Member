@@ -1,5 +1,6 @@
 package com.baeker.member.member.domain.entity;
 
+import com.baeker.member.member.domain.Role;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
@@ -11,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +40,8 @@ public class Member extends BaseEntity {
     private String token;
     private boolean newMember;
     private String providerType; // 현재는 Kakao 만 있지만 확장성 고려하여 추가
-
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Builder.Default
     @ElementCollection
@@ -59,6 +62,7 @@ public class Member extends BaseEntity {
                 .profileImg(dto.getProfileImage())
                 .kakaoProfileImage(dto.getProfileImage())
                 .email(dto.getEmail())
+                .role(Role.ROLE_USER)
                 .token(dto.getToken())
                 .newMember(true)
                 .build();
@@ -163,8 +167,7 @@ public class Member extends BaseEntity {
     public Map<String, Object> toClaims() {
         return Map.of(
                 "id", getId(),
-                "username", getUsername(),
-                "nickname", getNickname()
+                "username", getUsername()
         );
     }
 }

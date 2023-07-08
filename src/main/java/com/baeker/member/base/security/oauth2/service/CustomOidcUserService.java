@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
@@ -35,9 +34,11 @@ public class CustomOidcUserService extends AbstractOAuth2UserService implements 
         ProviderUserRequest providerUserRequest = new ProviderUserRequest(clientRegistration,oidcUser);
         ProviderUser providerUser = providerUser(providerUserRequest);
 
+
         selfCertificate(providerUser);
 
         super.register(providerUser, oidcUserRequest);
+
 
         return new PrincipalUser(providerUser);
     }

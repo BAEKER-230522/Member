@@ -5,6 +5,11 @@ spring:
   profiles:
     default: dev
 
+  data:
+    redis:
+      host: redis
+      port: 6379
+
   application:
     name: baeker-member
 
@@ -104,11 +109,16 @@ logging.level:
     orm.jdbc.bind: trace
 
 custom:
+  front:
+    url: http://localhost:3000
   server: 101.101.208.240
   storage: ENC(ILubO430i175pGOuVoODag==)
   bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
   feign:
     solved: http://101.101.208.240:8084/api/solved
+
+  jwt:
+    secret-key: ENC(+GbV3Ykx/t5XFlaFHBZnXTzsSf9b3YChS2cVPTvCgwQmevtbB1Hfw91VMC/fTizxVssJvYiAMeQICsuoSrH5zNLh/jxJsXq/)
 
 jasypt:
   encryptor:

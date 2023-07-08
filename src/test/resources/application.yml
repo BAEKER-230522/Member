@@ -1,4 +1,8 @@
 spring:
+  data:
+    redis:
+      host: redis
+      port: 6379
   security:
     oauth2:
       resourceserver:
@@ -46,8 +50,12 @@ cloud:
       auto: false
 
 custom:
+  front:
+    url: http://localhost:3000
   server: localhost
   storage: local
   bucket: baeker-local
   feign:
     solved: http://${custom.server}:8084/api/solved
+  jwt:
+    secret-key: ENC(+GbV3Ykx/t5XFlaFHBZnXTzsSf9b3YChS2cVPTvCgwQmevtbB1Hfw91VMC/fTizxVssJvYiAMeQICsuoSrH5zNLh/jxJsXq/)
