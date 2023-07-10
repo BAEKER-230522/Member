@@ -1,4 +1,32 @@
 spring:
+  data:
+    redis:
+      host: redis
+      port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://kauth.kakao.com/.well-known/jwks.json
+      client:
+        registration:
+          kakao:
+            clientId: ENC(0HCojoXJI2AP2Y71MdgjJ8uH7iJLBtyBEOtBkTrteQMu46fZXaJRcikg1KQLA4US)
+            client-secret: ENC(Wv7Qf1vhum0OG8DS6XF3fvPxWk8mMsd75TdRzcxN3IsFMc2uHjsF50jm7cNHgsFO)
+            scope: account_email, profile_nickname, profile_image, openid
+            client-name: kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: http://${custom.server}:8081/login/oauth2/code/kakao
+            client-authentication-method: POST
+
+        provider:
+          kakao:
+            jwk-set-uri: https://kauth.kakao.com/.well-known/jwks.json
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v1/oidc/userinfo
+            #            user-name-attribute: openid
+            issuer-uri: https://kauth.kakao.com
   datasource:
     url: jdbc:h2:mem:testdb
     username: sa
@@ -22,8 +50,12 @@ cloud:
       auto: false
 
 custom:
+  front:
+    url: http://localhost:3000
   server: localhost
   storage: local
   bucket: baeker-local
   feign:
     solved: http://${custom.server}:8084/api/solved
+  jwt:
+    secret-key: ENC(+GbV3Ykx/t5XFlaFHBZnXTzsSf9b3YChS2cVPTvCgwQmevtbB1Hfw91VMC/fTizxVssJvYiAMeQICsuoSrH5zNLh/jxJsXq/)
