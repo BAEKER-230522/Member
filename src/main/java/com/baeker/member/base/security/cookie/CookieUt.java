@@ -38,7 +38,6 @@ public class CookieUt {
                     .findFirst()
                     .orElse(null);
         }
-
         return null;
     }
 
