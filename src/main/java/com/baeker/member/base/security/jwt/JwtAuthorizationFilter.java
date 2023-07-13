@@ -1,7 +1,6 @@
 package com.baeker.member.base.security.jwt;
 
 import com.baeker.member.base.security.cookie.CookieUt;
-import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import jakarta.servlet.FilterChain;
@@ -29,7 +28,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtProvider;
     private final MemberService memberService;
     private final CookieUt cookieUt;
-    private final RedisUt redisUt;
+//    private final RedisUt redisUt;
 
 
     @Override
@@ -70,13 +69,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         long id = (int) claims.get("id");
         member = memberService.findById(id);
 
-        Long ttl = redisUt.getExpire(id);
+//        Long ttl = redisUt.getExpire(id);
 
         // 리프레시 토큰까지 만료되었거나 키가 존재하지 않는 경우
-        if (ttl < 0) {
-            log.debug("재로그인");
-            response.sendRedirect("/member/login");
-        }
+//        if (ttl < 0) {
+//            log.debug("재로그인");
+//            response.sendRedirect("/member/login");
+//        }
 
         Map<String, String> tokens = jwtProvider.genAccessTokenAndRefreshToken(member);
 
