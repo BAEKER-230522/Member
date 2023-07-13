@@ -5,10 +5,10 @@ spring:
   profiles:
     default: dev
 
-  data:
-    redis:
-      host: redis
-      port: 6379
+#  data:
+#    redis:
+#      host: redis
+#      port: 6379
 
   application:
     name: baeker-member

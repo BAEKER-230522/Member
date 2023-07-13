@@ -1,7 +1,6 @@
 package com.baeker.member.base.security.jwt;
 
 import com.baeker.member.base.util.Ut;
-import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -19,8 +18,8 @@ import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
-    @Autowired
-    private RedisUt redisUt;
+//    @Autowired
+//    private RedisUt redisUt;
     private SecretKey cachedSecretKey;
 
     public final static long ACCESS_TOKEN_VALIDATION_SECOND = 1000L * 60 * 30; // 30분
@@ -89,7 +88,7 @@ public class JwtTokenProvider {
         String accessToken = genToken(member.toClaims(), ACCESS_TOKEN_VALIDATION_SECOND);
         String refreshToken = genToken(member.toClaims(), REFRESH_TOKEN_VALIDATION_SECOND);
         String key = String.valueOf(member.getId());
-        redisUt.setValue(key, refreshToken, REFRESH_TOKEN_VALIDATION_SECOND);
+//        redisUt.setValue(key, refreshToken, REFRESH_TOKEN_VALIDATION_SECOND);
 
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
