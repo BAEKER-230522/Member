@@ -64,6 +64,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .formLogin().disable()
+                .csrf().disable()
                 .authorizeHttpRequests().requestMatchers("/**").permitAll().and()
                 .oauth2Login(oauth2 -> oauth2
 //                            .authorizationEndpoint().baseUri("oauth2/authorize/**")
