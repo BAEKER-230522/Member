@@ -65,6 +65,7 @@ public class SecurityConfig {
         return http
                 .formLogin().disable()
                 .csrf().disable()
+                .cors().disable()
                 .authorizeHttpRequests().requestMatchers("/**").permitAll().and()
                 .oauth2Login(oauth2 -> oauth2
 //                            .authorizationEndpoint().baseUri("oauth2/authorize/**")
