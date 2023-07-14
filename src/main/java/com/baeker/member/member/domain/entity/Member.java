@@ -39,7 +39,6 @@ public class Member extends BaseEntity {
     private String email;
     private String token;
     private boolean newMember;
-    private String providerType; // 현재는 Kakao 만 있지만 확장성 고려하여 추가
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -167,7 +166,8 @@ public class Member extends BaseEntity {
     public Map<String, Object> toClaims() {
         return Map.of(
                 "id", getId(),
-                "username", getUsername()
+                "username", getUsername(),
+                "role", getRole()
         );
     }
 }
