@@ -37,6 +37,7 @@ spring:
             user-info-uri: https://kapi.kakao.com/v1/oidc/userinfo
 #            user-name-attribute: openid
             issuer-uri: https://kauth.kakao.com
+
   mvc:
     hidden-method:
       filter:

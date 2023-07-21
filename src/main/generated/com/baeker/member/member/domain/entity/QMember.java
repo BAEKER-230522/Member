@@ -64,8 +64,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath provider = createString("provider");
 
-    public final StringPath providerType = createString("providerType");
-
     public final EnumPath<com.baeker.member.member.domain.Role> role = createEnum("role", com.baeker.member.member.domain.Role.class);
 
     //inherited
