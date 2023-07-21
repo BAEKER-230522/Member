@@ -51,10 +51,10 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
-//        String url = FRONT_URL + "?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
-//                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
-        String url = FRONT_URL;
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        String url = FRONT_URL + "/login/kakao" + "?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
+                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
+//        String url = FRONT_URL;
+//        response.addHeader("Authorization", "Bearer " + accessToken);
         response.sendRedirect(url);
     }
 }
