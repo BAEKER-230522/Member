@@ -90,19 +90,19 @@ message:
     study: "study"
     solved-member: "solved-member"
 
-eureka:
-  instance:
-
-    # IP 와 서버 포트를 통해 Id 설정
-    instance-id: ${custom.server}:${server.port}
-    prefer-ip-address: true
-
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      # Eureka 서버 주소 (만약 2개 이상일경우 , 를 통해 연속 입력)
-      defaultZone: http://${custom.server}:8761/eureka
+#eureka:
+#  instance:
+#
+#    # IP 와 서버 포트를 통해 Id 설정
+#    instance-id: ${custom.server}:${server.port}
+#    prefer-ip-address: true
+#
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      # Eureka 서버 주소 (만약 2개 이상일경우 , 를 통해 연속 입력)
+#      defaultZone: http://${custom.server}:8761/eureka
 
 logging.level:
   org.hibernate:
