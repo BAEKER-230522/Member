@@ -49,6 +49,7 @@ spring:
     username: ENC(MrlF9UZUaHufCgWLRE3ipQ==)
     password: ENC(dhw6nRBS+50xHhqPVFnZdw==)
 
+
   jpa:
     hibernate:
       ddl-auto: create
