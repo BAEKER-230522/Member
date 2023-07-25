@@ -11,7 +11,7 @@ spring:
 #      port: 6379
 
   application:
-    name: baeker-member
+    name: member
 
   security:
     oauth2:
@@ -112,7 +112,7 @@ logging.level:
 custom:
   front:
     url: http://localhost:3000
-  server: 101.101.208.240
+  server: 34.64.37.204
   storage: ENC(ILubO430i175pGOuVoODag==)
   bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
   feign:
