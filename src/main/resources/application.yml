@@ -111,7 +111,7 @@ logging.level:
     orm.jdbc.bind: trace
 
 custom:
-  gateway: 34.64.152.66
+  gateway: 34.64.250.170
   front:
     url: http://localhost:3000
   server: 10.22.1.11 #101.101.208.240 #34.64.37.204
