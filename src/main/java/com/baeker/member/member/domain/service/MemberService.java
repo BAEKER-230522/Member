@@ -368,10 +368,6 @@ public class MemberService {
             member = create(dto);
         }
 
-
-        // 닉네임을 랜덤으로 생성
-
-
         memberRepository.save(member);
 
         return member;
