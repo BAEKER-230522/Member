@@ -90,7 +90,6 @@ message:
     member: "member"
     study: "study"
     solved-member: "solved-member"
-
 eureka:
   instance:
 
@@ -103,15 +102,14 @@ eureka:
     fetch-registry: true
     service-url:
       # Eureka 서버 주소 (만약 2개 이상일경우 , 를 통해 연속 입력)
-      defaultZone: http://10.22.130.253:8761/eureka
-
+      defaultZone: http://10.22.131.215:8761/eureka
 logging.level:
   org.hibernate:
     SQL: debug
     orm.jdbc.bind: trace
 
 custom:
-  gateway: 34.64.250.170
+  gateway: 34.64.245.180
   front:
     url: http://localhost:3000
   server: 10.22.1.11 #101.101.208.240 #34.64.37.204
