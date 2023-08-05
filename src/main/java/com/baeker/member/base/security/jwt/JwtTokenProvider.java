@@ -7,6 +7,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,9 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 //    @Autowired
-    private RedisUt redisUt;
+    private final RedisUt redisUt;
     private SecretKey cachedSecretKey;
 
     public final static long ACCESS_TOKEN_VALIDATION_SECOND = (1000L * 60 * 30) * 4; // 30분 * 4 = 2시간 (테스트용)

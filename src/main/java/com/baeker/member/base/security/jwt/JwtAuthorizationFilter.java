@@ -28,27 +28,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtProvider;
     private final MemberService memberService;
-    private final CookieUt cookieUt;
+//    private final CookieUt cookieUt;
     private final RedisUt redisUt;
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Cookie accessToken = cookieUt.getCookie(request, "accessToken");
+        String accessToken = request.getHeader("Authorization");
 
         // accessToken 만료된 경우
         if (accessToken == null) {
             // 리프레시 토큰 확인
-            Cookie refreshToken = cookieUt.getCookie(request, "refreshToken");
+            String refreshToken = request.getHeader("refreshToken");
             if (refreshToken != null) {
                 createNewAccessToken(refreshToken, response);
             }
         } else {
-            String token = accessToken.getValue();
 
-            if (jwtProvider.verify(token)) {
+            if (jwtProvider.verify(accessToken)) {
                 Member member = null;
-                Map<String, Object> claims = jwtProvider.getClaims(token);
+                Map<String, Object> claims = jwtProvider.getClaims(accessToken);
                 long id = (int) claims.get("id");
 
                 member = memberService.findById(id);
@@ -61,11 +60,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 새로운 액세스 토큰 발급하는 메서드
-    private void createNewAccessToken(Cookie refreshToken, HttpServletResponse response) throws IOException {
+    private void createNewAccessToken(String refreshToken, HttpServletResponse response) throws IOException {
         Member member = null;
         log.debug("토큰 만료");
-        String token = refreshToken.getValue();
-        Map<String, Object> claims = jwtProvider.getClaims(token);
+        Map<String, Object> claims = jwtProvider.getClaims(refreshToken);
 
         long id = (int) claims.get("id");
         member = memberService.findById(id);
@@ -75,13 +73,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 리프레시 토큰까지 만료되었거나 키가 존재하지 않는 경우
         if (ttl < 0) {
             log.debug("재로그인");
-            response.sendRedirect("/member/login");
+            response.sendRedirect("/oauth2/authorization/kakao");
         }
 
         Map<String, String> tokens = jwtProvider.genAccessTokenAndRefreshToken(member);
-
-        response.addCookie(cookieUt.createCookie("accessToken", tokens.get("accessToken")));
-        response.addCookie(cookieUt.createRefreshCookie("refreshToken", tokens.get("refreshToken")));
     }
 
     // 강제로 로그인 처리하는 메서드 (로그인한 사용자의 정보를 가져옴)
