@@ -1,6 +1,7 @@
 package com.baeker.member.base.security.handler;
 
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
+import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import jakarta.servlet.FilterChain;
@@ -32,7 +33,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private final MemberService memberService;
 
     private final JwtTokenProvider jwtTokenProvider;
-//    private final RedisUt redisUt;
+    private final RedisUt redisUt;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
