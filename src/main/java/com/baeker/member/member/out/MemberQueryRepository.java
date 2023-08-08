@@ -52,7 +52,8 @@ public class MemberQueryRepository {
                         m.provider,
                         m.email,
                         m.token,
-                        m.newMember
+                        m.newMember,
+                        m.lastSolvedProblemId
                 ))
                 .from(m)
                 .where(m.id.in(memberIds))

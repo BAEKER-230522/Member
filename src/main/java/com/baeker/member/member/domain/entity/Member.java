@@ -144,6 +144,13 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+    // 최근 제출한 문제 update //
+    public Member updateLastSolved(int problem) {
+        return this.toBuilder()
+                .lastSolvedProblemId(problem)
+                .build();
+    }
+
 
     /**
      * 추가한 부분

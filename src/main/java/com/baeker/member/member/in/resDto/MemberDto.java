@@ -36,6 +36,7 @@ public class MemberDto {
     private String token;
     private boolean newMember;
     private String status;
+    private int lastSolvedProblemId;
 
     public MemberDto(Member member) {
         this.id = member.getId();
@@ -58,10 +59,11 @@ public class MemberDto {
         this.email = member.getEmail();
         this.token = member.getToken();
         this.newMember = true;
+        this.lastSolvedProblemId = member.getLastSolvedProblemId();
     }
 
     @QueryProjection
-    public MemberDto(Long id, LocalDateTime createDate, LocalDateTime modifyDate, int bronze, int silver, int gold, int diamond, int ruby, int platinum, String username, String nickname, String baekJoonName, String about, String profileImg, String kakaoProfileImage, String provider, String email, String token, boolean newMember) {
+    public MemberDto(Long id, LocalDateTime createDate, LocalDateTime modifyDate, int bronze, int silver, int gold, int diamond, int ruby, int platinum, String username, String nickname, String baekJoonName, String about, String profileImg, String kakaoProfileImage, String provider, String email, String token, boolean newMember, int lastSolvedProblemId) {
         this.id = id;
         this.createDate = createDate;
         this.modifyDate = modifyDate;
@@ -82,5 +84,6 @@ public class MemberDto {
         this.token = token;
         this.newMember = newMember;
         this.solvedBaekJoon = bronze + silver + gold + diamond + ruby + platinum;
+        this.lastSolvedProblemId = lastSolvedProblemId;
     }
 }
