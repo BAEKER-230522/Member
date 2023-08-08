@@ -370,6 +370,7 @@ public class MemberService {
             dto.setProvider(providerType);
             dto.setProfileImage(profileImg);
 //            dto.setToken(token);
+            dto.setNickName(username);
 
             member = create(dto);
         }
