@@ -1,12 +1,9 @@
 package com.baeker.member.member.in.contorller;
 
 import com.baeker.member.base.request.RsData;
-import com.baeker.member.member.in.reqDto.JoinReqDto;
+import com.baeker.member.member.in.reqDto.*;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
-import com.baeker.member.member.in.reqDto.MyStudyReqDto;
-import com.baeker.member.member.in.reqDto.UpdateLastSolvedReqDto;
-import com.baeker.member.member.in.reqDto.UpdateReqDto;
 import com.baeker.member.member.in.resDto.LastSolvedDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.UpdateResDto;
@@ -119,5 +116,16 @@ public class MemberController {
 
         log.info("마지막 제출 문제 업데이트 완료 member id = {} / 문제 번호 = {}", dto.getMemberId(), dto.getProblemId());
         return RsData.successOf(resDto);
+    }
+
+    @Operation(summary = "member solved count 최신화")
+    @PostMapping("/solved")
+    public RsData updateSolved(
+            @RequestBody @Valid SolvedCountReqDto dto
+    ) {
+        log.info("solved count 최신화 요청 확인 member id = {}", dto.getId());
+        Member member = memberService.addSolvedCount(dto);
+        log.info("update 성공 member id = {} / solved count = {}", dto.getId(), member.solvedCount());
+        return RsData.of("S-1", "성공", "총 " + member.solvedCount() + "문제 해결");
     }
 }

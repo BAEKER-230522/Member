@@ -179,6 +179,7 @@ public class MemberService {
      * update profile img
      * event : 백준 연동
      * evnet : Solved Count Update
+     * kafka 임시 대용 : Solved Count Update
      * event : when create my study
      * update snapshot
      * s3 upload
@@ -278,6 +279,21 @@ public class MemberService {
         this.updateSnapshot(member, dto);
 
         memberRepository.save(member.updateSolvedCount(event));
+    }
+
+    //-- kafka 대신 임시용 api --//
+    @Transactional
+    public Member addSolvedCount(SolvedCountReqDto reqDto) {
+
+        Member member = this.findById(reqDto.getId());
+
+        if (member.getBaekJoonName() == null)
+            throw new NotFoundException("백준 연동 아이디가 없는 회원입니다.");
+
+        BaekJoonDto dto = new BaekJoonDto(reqDto);
+        this.updateSnapshot(member, dto);
+
+        return memberRepository.save(member.updateSolvedCount(reqDto));
     }
 
     //-- event : when create my study --//
