@@ -3,9 +3,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,4 +42,4 @@ jobs:
     steps:
       - name: deploy run
         run: |
-          sh /home1/nbpmon/member/dep/run.sh
+          sh /kube/member/run.sh

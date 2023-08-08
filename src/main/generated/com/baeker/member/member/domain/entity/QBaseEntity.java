@@ -31,6 +31,8 @@ public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Integer> lastSolvedProblemId = createNumber("lastSolvedProblemId", Integer.class);
+
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Integer> platinum = createNumber("platinum", Integer.class);

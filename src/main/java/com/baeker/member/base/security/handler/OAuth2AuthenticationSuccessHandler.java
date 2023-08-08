@@ -1,6 +1,7 @@
 package com.baeker.member.base.security.handler;
 
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
+import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import jakarta.servlet.FilterChain;
@@ -32,7 +33,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private final MemberService memberService;
 
     private final JwtTokenProvider jwtTokenProvider;
-//    private final RedisUt redisUt;
+    private final RedisUt redisUt;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
@@ -48,13 +49,14 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         Map<String, String> tokens = jwtTokenProvider.genAccessTokenAndRefreshToken(member);
 
-
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
-//        String url = FRONT_URL + "/login/kakao" + "?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
-//                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
-        String url = FRONT_URL;
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        Long memberId = member.getId();
+        String url = FRONT_URL + "/login" +"?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
+                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8) + "&memberId=" + memberId;
+
+//        String url = FRONT_URL;
+//        response.addHeader("Authorization", "Bearer " + accessToken);
         response.sendRedirect(url);
     }
 }

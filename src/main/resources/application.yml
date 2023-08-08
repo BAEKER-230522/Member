@@ -5,13 +5,13 @@ spring:
   profiles:
     default: dev
 
-#  data:
-#    redis:
-#      host: redis
-#      port: 6379
+  data:
+    redis:
+      host: redis
+      port: 6379
 
   application:
-    name: baeker-member
+    name: member-service
 
   security:
     oauth2:
@@ -26,7 +26,8 @@ spring:
             scope: account_email, profile_nickname, profile_image, openid
             client-name: kakao
             authorization-grant-type: authorization_code
-            redirect-uri: http://${custom.server}:8081/login/oauth2/code/kakao
+            redirect-uri: http://${custom.gateway}:80/login/oauth2/code/kakao
+#            redirect-uri: http://localhost:8081/login/oauth2/code/kakao
             client-authentication-method: POST
 
         provider:
@@ -48,6 +49,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/bk__member?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: ENC(MrlF9UZUaHufCgWLRE3ipQ==)
     password: ENC(dhw6nRBS+50xHhqPVFnZdw==)
+
 
   jpa:
     hibernate:
@@ -89,7 +91,6 @@ message:
     member: "member"
     study: "study"
     solved-member: "solved-member"
-
 eureka:
   instance:
 
@@ -102,17 +103,17 @@ eureka:
     fetch-registry: true
     service-url:
       # Eureka 서버 주소 (만약 2개 이상일경우 , 를 통해 연속 입력)
-      defaultZone: http://${custom.server}:8761/eureka
-
+      defaultZone: http://10.22.131.215:8761/eureka
 logging.level:
   org.hibernate:
     SQL: debug
     orm.jdbc.bind: trace
 
 custom:
+  gateway: 34.64.245.180
   front:
     url: http://localhost:3000
-  server: 101.101.208.240
+  server: 10.22.1.11 #101.101.208.240 #34.64.37.204
   storage: ENC(ILubO430i175pGOuVoODag==)
   bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
   feign:

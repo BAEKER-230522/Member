@@ -30,16 +30,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.stream.events.Characters;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -178,6 +175,7 @@ public class MemberService {
      * nickname, about, profile img 수정
      * update my study
      * delete my study
+     * update lastSolvedProblemId
      * update profile img
      * event : 백준 연동
      * evnet : Solved Count Update
@@ -222,6 +220,14 @@ public class MemberService {
         member.getMyStudies().remove(dto.getMyStudyId());
         return member;
     }
+
+    //-- update lastSolvedProblemId --//
+    @Transactional
+    public Member updateLastSolved(UpdateLastSolvedReqDto dto) {
+        Member member = this.findById(dto.getMemberId());
+        return memberRepository.save(member.updateLastSolved(dto.getProblemId()));
+    }
+
 
     //-- update profile img --//
     @Transactional
@@ -364,13 +370,10 @@ public class MemberService {
             dto.setProvider(providerType);
             dto.setProfileImage(profileImg);
 //            dto.setToken(token);
+            dto.setNickName(username);
 
             member = create(dto);
         }
-
-
-        // 닉네임을 랜덤으로 생성
-
 
         memberRepository.save(member);
 

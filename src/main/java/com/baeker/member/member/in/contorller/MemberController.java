@@ -5,9 +5,12 @@ import com.baeker.member.member.in.reqDto.JoinReqDto;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.reqDto.MyStudyReqDto;
+import com.baeker.member.member.in.reqDto.UpdateLastSolvedReqDto;
 import com.baeker.member.member.in.reqDto.UpdateReqDto;
+import com.baeker.member.member.in.resDto.LastSolvedDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.UpdateResDto;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,7 @@ public class MemberController {
     private final MemberService memberService;
 
     //-- create --//
+    @Operation(summary = "member 생성")
     @PostMapping("/v1/create")
     public RsData<MemberDto> create(@RequestBody @Valid JoinReqDto dto) {
         log.info("member 생성 요청 확인 username = {}", dto.getUsername());
@@ -35,6 +39,7 @@ public class MemberController {
     }
 
     //-- 백준 id 연동 --//
+    @Operation(summary = "백준 id 와 연동하기")
     @PostMapping("/v1/connect/baekjoon/{id}")
     public RsData connect(
             @PathVariable Long id,
@@ -49,6 +54,7 @@ public class MemberController {
     }
 
     //-- update 닉네임, 소개,프로필 사진 --//
+    @Operation(summary = "닉네임, 자기 소개, 프로필 사진 업데이트")
     @PostMapping("/v1/update")
     public RsData<UpdateResDto> update(@RequestBody @Valid UpdateReqDto dto) {
         log.info("member update 요청 확인 id = {}", dto.getId());
@@ -61,6 +67,7 @@ public class MemberController {
     }
 
     //-- update my study --//
+    @Operation(summary = "My study 추가")
     @PostMapping("/v1/my-study")
     public RsData myStudyUpdate(@RequestBody @Valid MyStudyReqDto dto) {
         log.info("my study 등록 요청 확인 member = {} / my study = {}", dto.getMemberId(), dto.getMyStudyId());
@@ -72,6 +79,7 @@ public class MemberController {
     }
 
     //-- update profile img --//
+    @Operation(summary = "프로필 이미지 업데이트")
     @PostMapping("/v1/profile-img/{id}")
     public RsData updateProfileImg(
             @PathVariable Long id,
@@ -86,6 +94,7 @@ public class MemberController {
     }
 
     //-- delete my study --//
+    @Operation(summary = "My Study 제거")
     @DeleteMapping("/v1/my-study")
     public RsData deleteMyStudy(@RequestBody @Valid MyStudyReqDto dto) {
         log.info("my study 삭제 요청 확인 member = {} / my study = {}", dto.getMemberId(), dto.getMyStudyId());
@@ -94,5 +103,21 @@ public class MemberController {
 
         log.info("my study 등록 완료");
         return RsData.of("S-1", "my study size - " + member.getMyStudies().size());
+    }
+
+    //-- update last solved --//
+    @Operation(summary = "마지막으로 해결한 문제 id")
+    @PostMapping("/v1/last-solved")
+    public RsData<LastSolvedDto> updateLastSolved(
+            @RequestBody @Valid UpdateLastSolvedReqDto dto
+    ) {
+        log.info("마지막 제출 문제 업데이트 요청 확인 member id = {} / 문제 번호 = {}", dto.getMemberId(), dto.getProblemId());
+
+        LastSolvedDto resDto = new LastSolvedDto(
+                memberService.updateLastSolved(dto)
+        );
+
+        log.info("마지막 제출 문제 업데이트 완료 member id = {} / 문제 번호 = {}", dto.getMemberId(), dto.getProblemId());
+        return RsData.successOf(resDto);
     }
 }
