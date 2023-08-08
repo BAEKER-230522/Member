@@ -47,6 +47,9 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath kakaoProfileImage = createString("kakaoProfileImage");
 
     //inherited
+    public final NumberPath<Integer> lastSolvedProblemId = _super.lastSolvedProblemId;
+
+    //inherited
     public final DateTimePath<java.time.LocalDateTime> modifyDate = _super.modifyDate;
 
     public final ListPath<Long, NumberPath<Long>> myStudies = this.<Long, NumberPath<Long>>createList("myStudies", Long.class, NumberPath.class, PathInits.DIRECT2);

@@ -35,6 +35,7 @@ public abstract class BaseEntity {
     int diamond;
     int ruby;
     int platinum;
+    int lastSolvedProblemId;
 
     public int solvedCount() {
         return bronze + silver + gold + diamond + ruby + platinum;

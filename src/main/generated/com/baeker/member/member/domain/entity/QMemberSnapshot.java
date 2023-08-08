@@ -44,6 +44,9 @@ public class QMemberSnapshot extends EntityPathBase<MemberSnapshot> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
+    //inherited
+    public final NumberPath<Integer> lastSolvedProblemId = _super.lastSolvedProblemId;
+
     public final QMember member;
 
     //inherited
