@@ -39,4 +39,14 @@ public class BaekJoonDto {
         this.ruby = event.getRuby();
         this.platinum = event.getPlatinum();
     }
+
+    public BaekJoonDto(SolvedCountReqDto dto) {
+        this.id = dto.getId();
+        this.bronze = dto.getBronze();
+        this.silver = dto.getSilver();
+        this.gold = dto.getGold();
+        this.diamond = dto.getDiamond();
+        this.ruby = dto.getRuby();
+        this.platinum = dto.getPlatinum();
+    }
 }

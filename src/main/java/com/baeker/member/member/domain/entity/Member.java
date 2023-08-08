@@ -4,6 +4,7 @@ import com.baeker.member.member.domain.Role;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
+import com.baeker.member.member.in.reqDto.SolvedCountReqDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -110,6 +111,19 @@ public class Member extends BaseEntity {
                 .platinum(this.getPlatinum() + event.getPlatinum())
                 .build();
     }
+
+    // 카프카 대신 임시용 //
+    public Member updateSolvedCount(SolvedCountReqDto dto) {
+        return this.toBuilder()
+                .bronze(this.getBronze() + dto.getBronze())
+                .silver(this.getSilver() + dto.getSilver())
+                .gold(this.getGold() + dto.getGold())
+                .diamond(this.getDiamond() + dto.getDiamond())
+                .ruby(this.getRuby() + dto.getRuby())
+                .platinum(this.getPlatinum() + dto.getPlatinum())
+                .build();
+    }
+
 
     // nickname, about, profile img 수정 //
     public Member update(String nickname, String about, String profileImg) {
