@@ -67,11 +67,9 @@ public class MemberService {
             this.findByUsername(dto.getUsername());
             throw new InvalidDuplicateException("이미 존재하는 username 입니다.");
         } catch (NotFoundException e) {
+            Member member = Member.createMember(dto);
+            return memberRepository.save(member);
         }
-
-        Member member = Member.createMember(dto);
-
-        return memberRepository.save(member);
     }
 
 
