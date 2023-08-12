@@ -358,7 +358,6 @@ public class MemberService {
      * @param email
      * @return
      */
-    @Transactional
     public Member whenSocialLogin(String providerType, String username, String email, String profileImg) {
 
         Member member = null;
@@ -371,13 +370,14 @@ public class MemberService {
     }
 
 
+    @Transactional
     public Member socialJoin(String providerType, String username, String password, String email, String profileImg) {
         Member member = null;
 
-        try {
-            member = findByUsername(username);
-            return member;
-        } catch (NotFoundException e) {
+//        try {
+//            member = findByUsername(username);
+//            return member;
+//        } catch (NotFoundException e) {
             JoinReqDto dto = new JoinReqDto();
             dto.setUsername(username);
             dto.setEmail(email);
@@ -389,7 +389,7 @@ public class MemberService {
             dto.setNickName(username);
 
             member = create(dto);
-        }
+//        }
 
         memberRepository.save(member);
 
