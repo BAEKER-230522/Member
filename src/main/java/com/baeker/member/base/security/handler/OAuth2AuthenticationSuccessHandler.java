@@ -1,6 +1,8 @@
 package com.baeker.member.base.security.handler;
 
+import com.baeker.member.base.exception.NotFoundException;
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
+import com.baeker.member.base.security.oauth2.service.CustomOidcUserService;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
@@ -31,6 +33,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Value("${custom.front.url}")
     private String FRONT_URL;
     private final MemberService memberService;
+    private final CustomOidcUserService customOidcUserService;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisUt redisUt;
@@ -45,6 +48,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         log.debug("OAuth2AuthenticationSuccessHandler");
         Member member = null;
         OidcUser user = (OidcUser) authentication.getPrincipal();
+
         member = memberService.findByUsername(user.getName());
 
         Map<String, String> tokens = jwtTokenProvider.genAccessTokenAndRefreshToken(member);

@@ -356,6 +356,7 @@ public class MemberService {
      * @param email
      * @return
      */
+    @Transactional
     public Member whenSocialLogin(String providerType, String username, String email, String profileImg) {
 
         Member member = null;
