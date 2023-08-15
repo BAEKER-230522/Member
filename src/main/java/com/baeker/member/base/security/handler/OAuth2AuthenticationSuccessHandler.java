@@ -56,9 +56,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String accessToken = tokens.get("accessToken");
         String refreshToken = tokens.get("refreshToken");
         Long memberId = member.getId();
+        boolean baekJoonConnect = false;
+        if (member.getBaekJoonName() != null) baekJoonConnect = true;
         String url = FRONT_URL + "/login" +"?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
-                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8) + "&memberId=" + memberId;
-
+                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8) + "&memberId=" + memberId
+                + "&baekJoonConnect=" + baekJoonConnect;
 //        String url = FRONT_URL;
 //        response.addHeader("Authorization", "Bearer " + accessToken);
         response.sendRedirect(url);
