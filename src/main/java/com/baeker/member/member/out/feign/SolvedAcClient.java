@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Qualifier
-@FeignClient(name = "solved-ac", url = "${custom.feign.solved}")
+@FeignClient(name = "solved-ac", url = "${custom.feign.solved}", configuration = FeignConfiguration.class)
 public interface SolvedAcClient {
 
     @GetMapping("/v1/valid/{name}")
