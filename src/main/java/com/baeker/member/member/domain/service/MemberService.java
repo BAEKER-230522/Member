@@ -241,13 +241,10 @@ public class MemberService {
     @Transactional
     public Member connectBaekjoon(Long id, String name) {
 
-        try {
-            RsData<ConBaekjoonResDto> resDto = solvedAcClient.validName(name);
-            publisher.publishEvent(new ConBjEvent(this, id, name, resDto.getData()));
-            return this.findById(id);
-        } catch (FeignException e) {
-            throw new NotFoundException("존재하지 않는 백준 이름입니다.");
-        }
+        this.findById(id);
+        RsData<ConBaekjoonResDto> resDto = solvedAcClient.validName(name);
+        publisher.publishEvent(new ConBjEvent(this, id, name, resDto.getData()));
+        return this.findById(id);
     }
 
     //-- event : 백준 연동 --//
@@ -351,6 +348,7 @@ public class MemberService {
 
     /**
      * 소셜 로그인 추가
+     *
      * @param providerType
      * @param username
      * @param email
@@ -377,17 +375,17 @@ public class MemberService {
 //            member = findByUsername(username);
 //            return member;
 //        } catch (NotFoundException e) {
-            JoinReqDto dto = new JoinReqDto();
-            dto.setUsername(username);
-            dto.setEmail(email);
-            dto.setPassword(password);
+        JoinReqDto dto = new JoinReqDto();
+        dto.setUsername(username);
+        dto.setEmail(email);
+        dto.setPassword(password);
 //            JoinReqDto dto = JoinReqDto.createJoinDto(username, ,password, email);
-            dto.setProvider(providerType);
-            dto.setProfileImage(profileImg);
+        dto.setProvider(providerType);
+        dto.setProfileImage(profileImg);
 //            dto.setToken(token);
-            dto.setNickName(username);
+        dto.setNickName(username);
 
-            member = create(dto);
+        member = create(dto);
 //        }
 
         memberRepository.save(member);

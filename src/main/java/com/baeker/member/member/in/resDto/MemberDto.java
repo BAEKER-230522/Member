@@ -1,9 +1,7 @@
 package com.baeker.member.member.in.resDto;
 
 import com.baeker.member.member.domain.entity.Member;
-import com.baeker.member.member.domain.entity.QMember;
 import com.querydsl.core.annotations.QueryProjection;
-import com.querydsl.core.types.dsl.NumberPath;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
