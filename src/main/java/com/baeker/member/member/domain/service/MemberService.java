@@ -67,11 +67,9 @@ public class MemberService {
             this.findByUsername(dto.getUsername());
             throw new InvalidDuplicateException("이미 존재하는 username 입니다.");
         } catch (NotFoundException e) {
+            Member member = Member.createMember(dto);
+            return memberRepository.save(member);
         }
-
-        Member member = Member.createMember(dto);
-
-        return memberRepository.save(member);
     }
 
 
@@ -371,13 +369,14 @@ public class MemberService {
     }
 
 
+    @Transactional
     public Member socialJoin(String providerType, String username, String password, String email, String profileImg) {
         Member member = null;
 
-        try {
-            member = findByUsername(username);
-            return member;
-        } catch (NotFoundException e) {
+//        try {
+//            member = findByUsername(username);
+//            return member;
+//        } catch (NotFoundException e) {
             JoinReqDto dto = new JoinReqDto();
             dto.setUsername(username);
             dto.setEmail(email);
@@ -389,7 +388,7 @@ public class MemberService {
             dto.setNickName(username);
 
             member = create(dto);
-        }
+//        }
 
         memberRepository.save(member);
 
