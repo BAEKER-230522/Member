@@ -20,6 +20,11 @@ public class ExceptionController {
         log.error(e.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
+    @ExceptionHandler(RefreshTokenExpirationException.class)
+    public ResponseEntity<ErrorResponse> exceptionHandler(RefreshTokenExpirationException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
 }
 
 
