@@ -1,9 +1,11 @@
 package com.baeker.member.member.in.contorller;
 
 import com.baeker.member.base.request.RsData;
+import com.baeker.member.base.security.jwt.JwtService;
 import com.baeker.member.member.in.reqDto.*;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
+import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import com.baeker.member.member.in.resDto.LastSolvedDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.UpdateResDto;
@@ -14,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/member")
@@ -21,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtService jwtService;
 
     //-- create --//
     @Operation(summary = "member 생성")
@@ -127,5 +133,17 @@ public class MemberController {
         Member member = memberService.addSolvedCount(dto);
         log.info("update 성공 member id = {} / solved count = {}", dto.getId(), member.solvedCount());
         return RsData.of("S-1", "성공", "총 " + member.solvedCount() + "문제 해결");
+    }
+
+    /**
+     * access token 만료된 경우
+     * token 재발급
+     */
+    @PostMapping("/v1/accessToken/expired")
+    public RsData<JwtTokenResponse> accessTokenExpired(
+            @RequestHeader("refreshToken") @Valid String refreshToken
+    ) throws IOException {
+        JwtTokenResponse newAccessToken = jwtService.createNewAccessToken(refreshToken);
+        return RsData.successOf(newAccessToken);
     }
 }
