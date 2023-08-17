@@ -44,7 +44,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 createNewAccessToken(refreshToken, response);
             }
         } else {
-
             if (jwtProvider.verify(accessToken)) {
                 Member member = null;
                 Map<String, Object> claims = jwtProvider.getClaims(accessToken);
@@ -77,6 +76,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         Map<String, String> tokens = jwtProvider.genAccessTokenAndRefreshToken(member);
+        response.addHeader("accessToken", tokens.get("accessToken"));
     }
 
     // 강제로 로그인 처리하는 메서드 (로그인한 사용자의 정보를 가져옴)
