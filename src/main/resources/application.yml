@@ -112,7 +112,7 @@ logging.level:
 custom:
   gateway: 34.64.245.180
   front:
-    url: http://localhost:3000
+    url: https://baeker.vercel.app
   server: 10.22.1.11 #101.101.208.240 #34.64.37.204
   storage: ENC(ILubO430i175pGOuVoODag==)
   bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
