@@ -83,6 +83,7 @@ public class MemberService {
      * find by 백준 name
      * find all snapshot
      * find today snapshot
+     * find member ranking
      */
 
     //-- find by username --//
@@ -165,6 +166,11 @@ public class MemberService {
             throw new NotFoundException("백준 연동이 되어있지 않은 회원 입니다.");
 
         return member.getSnapshotList().get(0);
+    }
+
+    //-- find member ranking --//
+    public List<MemberDto> findMemberRanking(int page, int content) {
+        return memberQueryRepository.findMemberRanking(page, content);
     }
 
 

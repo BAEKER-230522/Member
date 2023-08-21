@@ -48,12 +48,12 @@ public class MemberQueryRepository {
                         m.baekJoonName,
                         m.about,
                         m.profileImg,
-                        m.kakaoProfileImage,
                         m.provider,
                         m.email,
                         m.token,
                         m.newMember,
-                        m.lastSolvedProblemId
+                        m.lastSolvedProblemId,
+                        m.ranking
                 ))
                 .from(m)
                 .where(m.id.in(memberIds))
@@ -61,6 +61,36 @@ public class MemberQueryRepository {
 
         for (MemberDto dto : result) dto.setStatus(status);
         return result;
+    }
+
+    //-- 문제 해결 순위로 리스트 조회 --//
+    public List<MemberDto> findMemberRanking(int page, int content) {
+        return query.select(new QMemberDto(
+                        m.id,
+                        m.createDate,
+                        m.modifyDate,
+                        m.bronze,
+                        m.silver,
+                        m.gold,
+                        m.diamond,
+                        m.ruby,
+                        m.platinum,
+                        m.username,
+                        m.nickname,
+                        m.baekJoonName,
+                        m.about,
+                        m.profileImg,
+                        m.provider,
+                        m.email,
+                        m.token,
+                        m.newMember,
+                        m.lastSolvedProblemId,
+                        m.ranking
+                )).from(m)
+                .orderBy(m.ranking.desc())
+                .offset(page * content)
+                .limit(content)
+                .fetch();
     }
 }
 
