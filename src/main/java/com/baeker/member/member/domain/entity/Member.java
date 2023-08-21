@@ -164,6 +164,11 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+    // 랭킹 업데이트 //
+    public void updateRanking(int rank) {
+        this.ranking = rank;
+    }
+
 
     /**
      * 추가한 부분
