@@ -81,7 +81,7 @@ public class MemberService {
      * find by id
      * find by member id list
      * find by 백준 name
-     * find all snapshot
+     * find all snapshot / 삭제 예정
      * find today snapshot
      * find member ranking
      */
@@ -153,7 +153,7 @@ public class MemberService {
         throw new NotFoundException("존재하지 않는 백준 name / name = " + baekJoonName);
     }
 
-    //-- find all snapshot --//
+    //-- find all snapshot / 삭제 예정 --//
     public List<MemberSnapshot> findAllSnapshot(Member member) {
         return snapshotQueryRepository.findByMemberId(member);
     }
@@ -192,13 +192,15 @@ public class MemberService {
 
     //-- nickname, about, profile img 수정 --//
     @Transactional
-    public Member update(UpdateReqDto dto) {
+    public Member update(UpdateReqDto dto, MultipartFile img) {
+
+        String imgUrl = this.s3Upload(img, dto.getId());
 
         Member member = this.findById(dto.getId())
                 .update(
                         dto.getNickname(),
                         dto.getAbout(),
-                        dto.getProfileImg()
+                        imgUrl
                 );
 
         return memberRepository.save(member);

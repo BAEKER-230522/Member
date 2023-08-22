@@ -93,11 +93,16 @@ public class MemberFindController {
     public RsData<List<SnapshotResDto>> findAllSnapshot(@RequestParam @Valid Long id) {
         log.info("일주일간 해결한 solved count 요청 확인 member id = {}", id);
 
-        Member member = memberService.findById(id);
-        List<SnapshotResDto> resDtoList = memberService.findAllSnapshot(member)
+        List<SnapshotResDto> resDtoList = memberService.findById(id)
+                .getSnapshotList()
                 .stream()
                 .map(s -> new SnapshotResDto(s))
                 .toList();
+
+//        List<SnapshotResDto> resDtoList = memberService.findAllSnapshot(member)
+//                .stream()
+//                .map(s -> new SnapshotResDto(s))
+//                .toList();
 
         log.info("Snapshot 일주일 분 응답 완료 size = {}", resDtoList.size());
         return RsData.of("S-1", "Dto Size = " + resDtoList.size(), resDtoList);
