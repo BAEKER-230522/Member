@@ -19,7 +19,7 @@ public class SnapshotQueryRepository {
         this.query = new JPAQueryFactory(em);
     }
 
-    //-- find by member --//
+    //-- find by member / 삭제 예정--//
     public List<MemberSnapshot> findByMemberId(Member member) {
 
         return query

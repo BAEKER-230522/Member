@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -59,10 +58,13 @@ public class MemberController {
     //-- update 닉네임, 소개,프로필 사진 --//
     @Operation(summary = "닉네임, 자기 소개, 프로필 사진 업데이트")
     @PostMapping("/v1/update")
-    public RsData<UpdateResDto> update(@RequestBody @Valid UpdateReqDto dto) {
+    public RsData<UpdateResDto> update(
+            @RequestPart @Valid UpdateReqDto dto,
+            @RequestPart MultipartFile img
+    ) {
         log.info("member update 요청 확인 id = {}", dto.getId());
 
-        Member member = memberService.update(dto);
+        Member member = memberService.update(dto, img);
         UpdateResDto response = new UpdateResDto(member);
 
         log.info("member update 완료");
