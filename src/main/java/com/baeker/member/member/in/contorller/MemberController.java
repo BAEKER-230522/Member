@@ -124,6 +124,7 @@ public class MemberController {
         return RsData.successOf(resDto);
     }
 
+    //-- solved count 최신화 --//
     @Operation(summary = "member solved count 최신화")
     @PostMapping("/solved")
     public RsData updateSolved(
@@ -134,6 +135,20 @@ public class MemberController {
         log.info("update 성공 member id = {} / solved count = {}", dto.getId(), member.solvedCount());
         return RsData.of("S-1", "성공", "총 " + member.solvedCount() + "문제 해결");
     }
+
+    //-- ranking 수동 업데이트 --//
+    @Operation(summary = "Member 랭킹 수동 업데이트 / admin 만 할 수 있도록 수정 예정")
+    @PostMapping("/v1/ranking")
+    public RsData updateRanking() {
+        log.info("member ranking 수동 update 요청 확인");
+
+        memberService.updateRanking();
+
+        log.info("member ranking 수동 update 완료");
+        return RsData.of("S-1", "성공");
+    }
+
+
 
     /**
      * access token 만료된 경우

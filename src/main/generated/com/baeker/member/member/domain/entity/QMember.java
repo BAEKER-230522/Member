@@ -44,8 +44,6 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
-    public final StringPath kakaoProfileImage = createString("kakaoProfileImage");
-
     //inherited
     public final NumberPath<Integer> lastSolvedProblemId = _super.lastSolvedProblemId;
 
@@ -66,6 +64,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath profileImg = createString("profileImg");
 
     public final StringPath provider = createString("provider");
+
+    public final NumberPath<Integer> ranking = createNumber("ranking", Integer.class);
 
     public final EnumPath<com.baeker.member.member.domain.Role> role = createEnum("role", com.baeker.member.member.domain.Role.class);
 

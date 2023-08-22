@@ -28,13 +28,13 @@ public class MemberDto {
     private String baekJoonName;
     private String about;
     private String profileImg;
-    private String kakaoProfileImage;
     private String provider;
     private String email;
     private String token;
     private boolean newMember;
     private String status;
     private int lastSolvedProblemId;
+    private Integer ranking;
 
     public MemberDto(Member member) {
         this.id = member.getId();
@@ -52,16 +52,16 @@ public class MemberDto {
         this.baekJoonName = member.getBaekJoonName();
         this.about = member.getAbout();
         this.profileImg = member.getProfileImg();
-        this.kakaoProfileImage = member.getKakaoProfileImage();
         this.provider = member.getProvider();
         this.email = member.getEmail();
         this.token = member.getToken();
         this.newMember = true;
         this.lastSolvedProblemId = member.getLastSolvedProblemId();
+        this.ranking = member.getRanking();
     }
 
     @QueryProjection
-    public MemberDto(Long id, LocalDateTime createDate, LocalDateTime modifyDate, int bronze, int silver, int gold, int diamond, int ruby, int platinum, String username, String nickname, String baekJoonName, String about, String profileImg, String kakaoProfileImage, String provider, String email, String token, boolean newMember, int lastSolvedProblemId) {
+    public MemberDto(Long id, LocalDateTime createDate, LocalDateTime modifyDate, int bronze, int silver, int gold, int diamond, int ruby, int platinum, String username, String nickname, String baekJoonName, String about, String profileImg, String provider, String email, String token, boolean newMember, int lastSolvedProblemId, Integer ranking) {
         this.id = id;
         this.createDate = createDate;
         this.modifyDate = modifyDate;
@@ -76,12 +76,12 @@ public class MemberDto {
         this.baekJoonName = baekJoonName;
         this.about = about;
         this.profileImg = profileImg;
-        this.kakaoProfileImage = kakaoProfileImage;
         this.provider = provider;
         this.email = email;
         this.token = token;
         this.newMember = newMember;
         this.solvedBaekJoon = bronze + silver + gold + diamond + ruby + platinum;
         this.lastSolvedProblemId = lastSolvedProblemId;
+        this.ranking = ranking;
     }
 }
