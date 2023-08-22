@@ -83,6 +83,7 @@ public class MemberService {
      * find by 백준 name
      * find all snapshot
      * find today snapshot
+     * find member ranking
      */
 
     //-- find by username --//
@@ -167,6 +168,11 @@ public class MemberService {
         return member.getSnapshotList().get(0);
     }
 
+    //-- find member ranking --//
+    public List<MemberDto> findMemberRanking(int page, int content) {
+        return memberQueryRepository.findMemberRanking(page, content);
+    }
+
 
     /**
      * * UPDATE METHOD **
@@ -181,6 +187,7 @@ public class MemberService {
      * event : when create my study
      * update snapshot
      * s3 upload
+     * ranking 수동 업데이트
      */
 
     //-- nickname, about, profile img 수정 --//
@@ -344,6 +351,15 @@ public class MemberService {
             throw new NullPointerException("프로필 이미지가 없습니다.");
         }
         return url;
+    }
+
+    //-- ranking 수동 업데이트 --//
+    @Transactional
+    public void updateRanking() {
+        List<Member> memberList = memberQueryRepository.findMemberRanking();
+
+        for (int i = 0; i < memberList.size(); i++)
+            memberList.get(i).updateRanking(i + 1);
     }
 
     /**

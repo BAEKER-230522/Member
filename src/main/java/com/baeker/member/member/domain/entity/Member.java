@@ -34,11 +34,11 @@ public class Member extends BaseEntity {
     private String nickname;
     private String about;
     private String profileImg;
-    private String kakaoProfileImage;
     private String password;
     private String provider;
     private String email;
     private String token;
+    private Integer ranking;
     private boolean newMember;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -60,7 +60,6 @@ public class Member extends BaseEntity {
                 .about("")
                 .password(dto.getPassword())
                 .profileImg(dto.getProfileImage())
-                .kakaoProfileImage(dto.getProfileImage())
                 .email(dto.getEmail())
                 .role(Role.ROLE_USER)
                 .token(dto.getToken())
@@ -163,6 +162,11 @@ public class Member extends BaseEntity {
         return this.toBuilder()
                 .lastSolvedProblemId(problem)
                 .build();
+    }
+
+    // 랭킹 업데이트 //
+    public void updateRanking(int rank) {
+        this.ranking = rank;
     }
 
 

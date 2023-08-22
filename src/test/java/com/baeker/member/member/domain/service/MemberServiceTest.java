@@ -7,9 +7,12 @@ import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.BaekJoonDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
+import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.out.SnapshotRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.convert.DataSizeUnit;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +36,8 @@ class MemberServiceTest {
 
 
     @Test
-    void My_Study_추가_이벤트() {
+    @DisplayName("My Study 추가하는 이벤트 검증")
+    void no01() {
         Member createMember = createMember();
 
         Member findMember = memberService.findById(createMember.getId());
@@ -54,7 +58,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void 백준_연동과_snapshot_생성() {
+    @DisplayName("백준 연동 그리고 스냅샷 생성 검증")
+    void no02() {
         Member createMember = createMember();
 
         Member findMember = memberService.findById(createMember.getId());
@@ -74,7 +79,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void SolvedCount_최신화와_snapshot_업데이트() {
+    @DisplayName("Solved count 최신화와 Snapshot 업데이트")
+    void no03() {
         Member member = createMember();
         Member findMember = memberService.findById(member.getId());
         publisher.publishEvent(new ConBjEvent(this, member.getId(), "baek",1, 1, 1, 1, 1, 1));
@@ -93,7 +99,8 @@ class MemberServiceTest {
     }
 
     @Test
-    void Snapshot_날짜별_저장과_기록삭제() {
+    @DisplayName("snapshot 날짜별 저장과 기록 삭제")
+    void no04() {
         Member member = createMember();
         Member findMember = memberService.findById(member.getId());
         publisher.publishEvent(new ConBjEvent(this, member.getId(), "baek",1, 1, 1, 1, 1, 1));
@@ -125,9 +132,47 @@ class MemberServiceTest {
         assertThat(findMember.getSnapshotList().get(0).getDayOfWeek()).isEqualTo(LocalDateTime.now().getDayOfWeek().toString());
     }
 
+    @Test
+    @DisplayName("ranking update")
+    void no05() {
+        Member member1 = createMember("user1", "member1", "bk1", 5);
+        Member member2 = createMember("user2", "member2", "bk2", 8);
+        Member member3 = createMember("user3", "member3", "bk3", 2);
+        Member member4 = createMember("user4", "member4", "bk4", 7);
+        Member member5 = createMember();
+
+        List<Member> all = memberService.finAll();
+        assertThat(all.size()).isEqualTo(5);
+
+        memberService.updateRanking();
+
+        assertThat(member1.getRanking()).isEqualTo(3);
+        assertThat(member2.getRanking()).isEqualTo(1);
+        assertThat(member3.getRanking()).isEqualTo(4);
+        assertThat(member4.getRanking()).isEqualTo(2);
+        assertThat(member5.getRanking()).isNull();
+
+        List<MemberDto> page1 = memberService.findMemberRanking(0, 2);
+        assertThat(page1.get(0).getNickname()).isEqualTo("member2");
+
+        List<MemberDto> page2 = memberService.findMemberRanking(1, 2);
+        assertThat(page2.get(0).getNickname()).isEqualTo("member1");
+
+        List<MemberDto> page3 = memberService.findMemberRanking(2, 2);
+        assertThat(page3.get(0).getNickname()).isEqualTo("member");
+    }
+
     private Member createMember() {
         JoinReqDto reqDto = JoinReqDto.createJoinDto("user", "member", "1234", "BAEKER", "aaa@aa.com", "123", "img");
         Member createMember = memberService.create(reqDto);
+        return createMember;
+    }
+
+    private Member createMember(String user, String nickname, String baekjoon, int solved) {
+        JoinReqDto reqDto = JoinReqDto.createJoinDto(user, nickname, "1234", "BAEKER", "aaa@aa.com", "123", "img");
+        Member createMember = memberService.create(reqDto);
+
+        publisher.publishEvent(new ConBjEvent(this, createMember.getId(), baekjoon, solved, 0,0,0,0,0));
         return createMember;
     }
 

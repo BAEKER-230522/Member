@@ -131,4 +131,19 @@ public class MemberFindController {
         log.info("member list 응답 완료 list size = {}", resDtoList.size());
         return RsData.successOf(resDtoList);
     }
+
+    //-- find member ranking --//
+    @GetMapping("/v1/ranking")
+    @Operation(summary = "member 문제 해결순 내림차순 목록 / page = 페이지, content = 페이지당 data 숫자")
+    public RsData<List<MemberDto>> findMemberRanking(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int content
+    ) {
+        log.info("문제 해결순 내림차순 요청 확인 page = {} / content = {}", page, content);
+
+        List<MemberDto> dtoList = memberService.findMemberRanking(page, content);
+
+        log.info("랭킹 응답 완료");
+        return RsData.successOf(dtoList);
+    }
 }
