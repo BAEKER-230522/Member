@@ -1,8 +1,8 @@
-package com.baeker.member.member.in.contorller;
+package com.baeker.member.baekerSearch.in.controller;
 
 import com.baeker.member.base.request.RsData;
-import com.baeker.member.member.domain.service.BaekerSearchService;
-import com.baeker.member.member.in.resDto.SearchResDto;
+import com.baeker.member.baekerSearch.domain.service.BaekerSearchService;
+import com.baeker.member.baekerSearch.in.resDto.SearchResDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

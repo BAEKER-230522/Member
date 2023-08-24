@@ -1,6 +1,6 @@
-package com.baeker.member.member.domain.service;
+package com.baeker.member.baekerSearch.domain.service;
 
-import com.baeker.member.member.in.resDto.SearchResDto;
+import com.baeker.member.baekerSearch.in.resDto.SearchResDto;
 import com.baeker.member.member.out.MemberQueryRepository;
 import com.baeker.member.member.out.feign.StudyClient;
 import lombok.RequiredArgsConstructor;

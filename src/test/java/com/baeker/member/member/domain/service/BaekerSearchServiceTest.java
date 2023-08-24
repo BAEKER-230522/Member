@@ -1,12 +1,13 @@
 package com.baeker.member.member.domain.service;
 
 
+import com.baeker.member.baekerSearch.domain.service.BaekerSearchService;
 import com.baeker.member.base.request.RsData;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
 import com.baeker.member.member.in.resDto.MemberDto;
-import com.baeker.member.member.in.resDto.SearchResDto;
-import com.baeker.member.member.in.resDto.StudyDto;
+import com.baeker.member.baekerSearch.in.resDto.SearchResDto;
+import com.baeker.member.baekerSearch.in.resDto.StudyDto;
 import com.baeker.member.member.out.feign.StudyClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -61,8 +62,7 @@ class BaekerSearchServiceTest {
     @Test
     @DisplayName("검색어로 member, study 조회")
     public void no1() {
-        Member member1 = member("user1", "abc");
-        Member member2 = member("user2", "bcd");
+        Member member1 = member("user1", "abc");        Member member2 = member("user2", "bcd");
         Member member3 = member("user3", "cde");
         Member member4 = member("user4", "def");
         Member member5 = member("user5", "efg");

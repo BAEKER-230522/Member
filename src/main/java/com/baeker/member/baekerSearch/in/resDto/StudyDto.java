@@ -1,4 +1,4 @@
-package com.baeker.member.member.in.resDto;
+package com.baeker.member.baekerSearch.in.resDto;
 
 import lombok.Data;
 

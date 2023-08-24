@@ -1,7 +1,7 @@
 package com.baeker.member.member.out.feign;
 
 import com.baeker.member.base.request.RsData;
-import com.baeker.member.member.in.resDto.StudyDto;
+import com.baeker.member.baekerSearch.in.resDto.StudyDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
