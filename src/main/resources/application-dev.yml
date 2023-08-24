@@ -23,3 +23,5 @@ custom:
   server: localhost
   storage: local
   bucket: baeker-local
+  feign:
+    study: http://localhost:8082/api/study
