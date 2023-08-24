@@ -62,7 +62,8 @@ class BaekerSearchServiceTest {
     @Test
     @DisplayName("검색어로 member, study 조회")
     public void no1() {
-        Member member1 = member("user1", "abc");        Member member2 = member("user2", "bcd");
+        Member member1 = member("user1", "abc");
+        Member member2 = member("user2", "bcd");
         Member member3 = member("user3", "cde");
         Member member4 = member("user4", "def");
         Member member5 = member("user5", "efg");
