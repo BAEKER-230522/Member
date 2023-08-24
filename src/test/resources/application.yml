@@ -57,5 +57,6 @@ custom:
   bucket: baeker-local
   feign:
     solved: http://${custom.server}:8084/api/solved
+    study: http://${custom.server}:8082/api/study
   jwt:
     secret-key: ENC(+GbV3Ykx/t5XFlaFHBZnXTzsSf9b3YChS2cVPTvCgwQmevtbB1Hfw91VMC/fTizxVssJvYiAMeQICsuoSrH5zNLh/jxJsXq/)

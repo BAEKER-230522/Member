@@ -17,3 +17,7 @@ spring:
     hibernate:
       ddl-auto: update
 
+custom:
+  feign:
+    study: http://study:8082/api/study
+

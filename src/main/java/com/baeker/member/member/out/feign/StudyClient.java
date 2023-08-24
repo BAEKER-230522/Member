@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @FeignClient(name = "study", url = "${custom.feign.study}", configuration = FeignConfiguration.class)
-
 public interface StudyClient {
 
     @GetMapping("/v1/{input}")
