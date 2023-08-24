@@ -100,7 +100,7 @@ public class MemberQueryRepository {
     }
 
     //-- 문제 해결순으로 정렬한 모든 member 목록 --//
-    public List<Member> findMemberRanking(){
+    public List<Member> findMemberRanking() {
         return query
                 .selectFrom(m)
                 .orderBy(Expressions.numberTemplate(
@@ -114,6 +114,36 @@ public class MemberQueryRepository {
 
     private <T extends Comparable> OrderSpecifier<T> nullsLast(Path<T> path) {
         return new OrderSpecifier<>(Order.ASC, path, OrderSpecifier.NullHandling.NullsLast);
+    }
+
+    //-- find by input --//
+    public List<MemberDto> findByInput(String input, int page, int content) {
+        return query.select(new QMemberDto(
+                        m.id,
+                        m.createDate,
+                        m.modifyDate,
+                        m.bronze,
+                        m.silver,
+                        m.gold,
+                        m.diamond,
+                        m.ruby,
+                        m.platinum,
+                        m.username,
+                        m.nickname,
+                        m.baekJoonName,
+                        m.about,
+                        m.profileImg,
+                        m.provider,
+                        m.email,
+                        m.token,
+                        m.newMember,
+                        m.lastSolvedProblemId,
+                        m.ranking
+                )).from(m)
+                .where(m.nickname.like("%" + input + "%"))
+                .offset(page * content)
+                .limit(content)
+                .fetch();
     }
 }
 
