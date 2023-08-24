@@ -17,7 +17,7 @@ public interface StudyClient {
     @GetMapping("/v1/{input}")
     RsData<List<StudyDto>> findInput(
             @PathVariable("input") String input,
-            @RequestParam int page,
-            @RequestParam int content
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "content") int content
     );
 }
