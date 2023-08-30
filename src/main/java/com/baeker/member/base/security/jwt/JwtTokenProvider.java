@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     private final RedisUt redisUt;
     private SecretKey cachedSecretKey;
 
-    public final static long ACCESS_TOKEN_VALIDATION_SECOND = (1000L * 60 * 30) * 4; // 30분 * 4 = 2시간 (테스트용)
+    public final static long ACCESS_TOKEN_VALIDATION_SECOND = (1000L * 60 * 5); // 5분 accessToken 만료
 
     public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 24 * 14; // 14일
 
