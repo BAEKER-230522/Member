@@ -103,7 +103,7 @@ eureka:
     fetch-registry: true
     service-url:
       # Eureka 서버 주소 (만약 2개 이상일경우 , 를 통해 연속 입력)
-      defaultZone: http://34.64.137.210:8761/eureka
+      defaultZone: http://eureka:8761/eureka
 logging.level:
   org.hibernate:
     SQL: debug
