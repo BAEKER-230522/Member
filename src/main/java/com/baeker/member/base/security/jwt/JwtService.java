@@ -58,8 +58,8 @@ public class JwtService {
 
         long id = (int) claims.get("id");
         member = memberService.findById(id);
-
-        Long ttl = redisUt.getExpire(id);
+        String redisSelectId = ""+id;
+        Long ttl = redisUt.getExpire(redisSelectId);
 
         // 리프레시 토큰까지 만료되었거나 키가 존재하지 않는 경우
         if (ttl < 0) {
