@@ -27,7 +27,7 @@ public class JwtTokenProvider {
 
     public final static long ACCESS_TOKEN_VALIDATION_SECOND = (1000L * 60 * 5); // 5분
 
-    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60 * 24 * 14; // 14일
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60; // 1시간
 
     @Value("${custom.jwt.secret-key}")
     private String secretKeyPlain;

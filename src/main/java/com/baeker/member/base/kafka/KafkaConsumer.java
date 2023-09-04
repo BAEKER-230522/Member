@@ -1,6 +1,6 @@
 package com.baeker.member.base.kafka;
 
-import com.baeker.member.base.exception.NotFoundException;
+import com.baeker.member.base.error.exception.NotFoundException;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Map;

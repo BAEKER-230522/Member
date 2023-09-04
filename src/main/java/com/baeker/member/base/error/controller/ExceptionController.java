@@ -1,5 +1,10 @@
-package com.baeker.member.base.exception;
+package com.baeker.member.base.error.controller;
 
+import com.baeker.member.base.error.ErrorResponse;
+import com.baeker.member.base.error.exception.AccessTokenExpirationException;
+import com.baeker.member.base.error.exception.InvalidDuplicateException;
+import com.baeker.member.base.error.exception.NotFoundException;
+import com.baeker.member.base.error.exception.RefreshTokenExpirationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +26,17 @@ public class ExceptionController {
         log.error(e.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
+
     @ExceptionHandler(RefreshTokenExpirationException.class)
-    public ResponseEntity<ErrorResponse> exceptionHandler(RefreshTokenExpirationException e) {
+    public ResponseEntity<ErrorResponse> refreshTokenExpirationException(RefreshTokenExpirationException e) {
         log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN.value()).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(AccessTokenExpirationException.class)
+    public ResponseEntity<ErrorResponse> accessTokenExpirationException(AccessTokenExpirationException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(new ErrorResponse(e.getMessage()));
     }
 }
 
