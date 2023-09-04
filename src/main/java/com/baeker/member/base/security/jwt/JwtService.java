@@ -1,14 +1,10 @@
 package com.baeker.member.base.security.jwt;
 
-import com.baeker.member.base.exception.RefreshTokenExpirationException;
+import com.baeker.member.base.error.exception.RefreshTokenExpirationException;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;

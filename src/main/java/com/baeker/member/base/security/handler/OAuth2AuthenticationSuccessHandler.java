@@ -1,6 +1,5 @@
 package com.baeker.member.base.security.handler;
 
-import com.baeker.member.base.exception.NotFoundException;
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
 import com.baeker.member.base.security.oauth2.service.CustomOidcUserService;
 import com.baeker.member.base.util.redis.RedisUt;
@@ -13,9 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -24,7 +21,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Scanner;
 
 @Component
 @Slf4j

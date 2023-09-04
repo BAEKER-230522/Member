@@ -1,4 +1,4 @@
-package com.baeker.member.base.exception;
+package com.baeker.member.base.error.exception;
 
 public class InvalidDuplicateException extends RuntimeException {
 
