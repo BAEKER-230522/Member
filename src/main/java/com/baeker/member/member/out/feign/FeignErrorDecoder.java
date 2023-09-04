@@ -1,6 +1,6 @@
 package com.baeker.member.member.out.feign;
 
-import com.baeker.member.base.exception.NotFoundException;
+import com.baeker.member.base.error.exception.NotFoundException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import jakarta.ws.rs.InternalServerErrorException;
