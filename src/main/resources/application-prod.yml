@@ -20,4 +20,6 @@ spring:
 custom:
   feign:
     study: http://study:8082/api/study
+  storage: prod
+  bucket: baeker-prod
 
