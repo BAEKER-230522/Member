@@ -41,7 +41,6 @@ public class CustomOidcUserService extends AbstractOAuth2UserService implements 
 
         super.register(providerUser, oidcUserRequest);
 
-
         return new PrincipalUser(providerUser);
     }
 }

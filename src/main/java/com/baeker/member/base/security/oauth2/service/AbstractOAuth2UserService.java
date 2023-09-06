@@ -11,7 +11,9 @@ import com.baeker.member.base.security.oauth2.repository.UserRepository;
 import com.baeker.member.base.security.oauth2.users.User;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
+import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -53,12 +55,16 @@ public abstract class AbstractOAuth2UserService {
             String username = providerUser.getUsername();
 
             Member member = memberService.whenSocialLogin(provider, username, email, profileImg);
-            
+            Map<String, String> token = tokenProvider.genAccessTokenAndRefreshToken(member);
         }else{
-            System.out.println("userRequest = " + userRequest);
+            throw new RuntimeException(userRequest.toString());
         }
     }
     public ProviderUser providerUser(ProviderUserRequest providerUserRequest){
         return providerUserConverter.convert(providerUserRequest);
+    }
+
+    private JwtTokenResponse getTokenDto(Map<String, String> token) {
+        return new JwtTokenResponse(token.get("accessToken"), token.get("refreshToken"));
     }
 }
