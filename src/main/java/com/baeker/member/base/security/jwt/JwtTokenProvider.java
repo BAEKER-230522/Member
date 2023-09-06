@@ -25,9 +25,9 @@ public class JwtTokenProvider {
     private final RedisUt redisUt;
     private SecretKey cachedSecretKey;
 
-    public final static long ACCESS_TOKEN_VALIDATION_SECOND = (1000L * 60 * 5); // 5분
+    public final static long ACCESS_TOKEN_VALIDATION_SECOND = (1000L * 60 * 30); // 30분
 
-    public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 60; // 1시간
+    public final static long REFRESH_TOKEN_VALIDATION_SECOND = (1000L * 60 * 60) * 24 * 14; // 14일
 
     @Value("${custom.jwt.secret-key}")
     private String secretKeyPlain;
