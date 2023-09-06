@@ -26,8 +26,8 @@ spring:
             scope: account_email, profile_nickname, profile_image, openid
             client-name: kakao
             authorization-grant-type: authorization_code
-            redirect-uri: https://bk.1ll.ca/login/oauth2/code/kakao #https://${custom.gateway}:443/login/oauth2/code/kakao
-#            redirect-uri: http://localhost:8081/login/oauth2/code/kakao
+#            redirect-uri: https://bk.1ll.ca/login/oauth2/code/kakao #https://${custom.gateway}:443/login/oauth2/code/kakao
+            redirect-uri: http://localhost:8081/login/oauth2/code/kakao
             client-authentication-method: POST
 
         provider:
