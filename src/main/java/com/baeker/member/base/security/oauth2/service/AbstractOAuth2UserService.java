@@ -23,6 +23,7 @@ import java.util.Map;
 
 @Service
 @Getter
+@Slf4j
 public abstract class AbstractOAuth2UserService {
 
 
@@ -57,7 +58,7 @@ public abstract class AbstractOAuth2UserService {
             Member member = memberService.whenSocialLogin(provider, username, email, profileImg);
             Map<String, String> token = tokenProvider.genAccessTokenAndRefreshToken(member);
         }else{
-            throw new RuntimeException(userRequest.toString());
+            log.warn("소셜 로그인 user null {}",userRequest.toString());
         }
     }
     public ProviderUser providerUser(ProviderUserRequest providerUserRequest){
