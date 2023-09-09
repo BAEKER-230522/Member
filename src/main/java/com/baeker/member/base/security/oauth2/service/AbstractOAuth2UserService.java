@@ -56,9 +56,9 @@ public abstract class AbstractOAuth2UserService {
             String username = providerUser.getUsername();
 
             Member member = memberService.whenSocialLogin(provider, username, email, profileImg);
-            Map<String, String> token = tokenProvider.genAccessTokenAndRefreshToken(member);
+//            Map<String, String> token = tokenProvider.genAccessTokenAndRefreshToken(member);
         }else{
-            log.warn("소셜 로그인 user null {}",userRequest.toString());
+            log.warn("소셜 로그인 user null {}",userRequest);
         }
     }
     public ProviderUser providerUser(ProviderUserRequest providerUserRequest){
