@@ -2,6 +2,7 @@ package com.baeker.member.base.security.oauth2.service;
 
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,8 +12,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.Provider;
 
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoService {
     private final CustomOidcUserService oidcUserService;
 
@@ -27,10 +31,11 @@ public class KakaoService {
     public void kakaoLogin(String code, String redirectUri) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add(CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
         String body = "grant_type=" + authorizationGrantType + "&client_id=" + clientId + "&redirect_uri=" + redirectUri + "&code=" + code + "&client_secret=" + clientSecret;
         HttpEntity<String> request = new HttpEntity<>(body, headers);
+
         String response = restTemplate.postForObject(tokenUri, request, String.class);
-        System.out.println(response);
+        log.info("카카오 로그인 response : {}", response);
     }
 }
