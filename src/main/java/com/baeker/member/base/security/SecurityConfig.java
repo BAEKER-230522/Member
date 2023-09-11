@@ -70,13 +70,13 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors().disable()
                 .authorizeHttpRequests().requestMatchers("/**").permitAll().and()
-//                .oauth2Login(oauth2 -> oauth2
+                .oauth2Login(oauth2 -> oauth2
 //                            .authorizationEndpoint().baseUri("oauth2/authorize/**")
 //        .and()
-//                            .userInfoEndpoint(userInfo -> userInfo
-//                                .oidcUserService(oidcUserService))
+                            .userInfoEndpoint(userInfo -> userInfo
+                                .oidcUserService(oidcUserService))
 //                            .successHandler(oAuth2AuthenticationSuccessHandler)
-//                )
+                )
                 .build();
     }
 

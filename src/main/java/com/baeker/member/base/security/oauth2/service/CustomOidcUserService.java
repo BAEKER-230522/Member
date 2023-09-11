@@ -34,6 +34,7 @@ public class CustomOidcUserService extends AbstractOAuth2UserService implements 
         OidcUserRequest oidcUserRequest =
                 new OidcUserRequest(clientRegistration, userRequest.getAccessToken(),
                         userRequest.getIdToken());
+
         OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService = new OidcUserService();
         OidcUser oidcUser = null;
         try {

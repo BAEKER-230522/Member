@@ -5,17 +5,21 @@ import com.baeker.member.base.error.exception.jwt.JwtCreateException;
 import com.baeker.member.base.security.jwt.JwtService;
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
 import com.baeker.member.base.security.oauth2.model.enums.OAuth2Config;
+import com.baeker.member.base.security.oauth2.model.social.KakaoUser;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,11 +31,15 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.Provider;
+import java.text.ParseException;
+import java.util.Base64;
 import java.util.Map;
 
 import static com.baeker.member.base.error.ErrorResponse.JWT_CREATE_EXCEPTION;
@@ -42,7 +50,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class KakaoService {
+public class KakaoService{
     private final CustomOidcUserService oidcUserService;
 
     @Value("${spring.security.oauth2.client.registration.kakao.clientId}")
@@ -79,22 +87,23 @@ public class KakaoService {
         try {
             jwtTokenResponse = getOidcTokenId(response, redirectUri);
 //            loginOidc(response, redirectUri);
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | ParseException e) {
             throw new JwtCreateException(JWT_CREATE_EXCEPTION.getMessage());
         }
         return jwtTokenResponse;
     }
 
 
-    private JwtTokenResponse getOidcTokenId(String response, String redirectUri) throws JsonProcessingException {
+    private JwtTokenResponse getOidcTokenId(String response, String redirectUri) throws JsonProcessingException, ParseException {
         JSONObject jsonObject = Json.mapper().readValue(response, JSONObject.class);
         String idToken = jsonObject.get("id_token").toString();
         String oauth2TokenId = jsonObject.get("access_token").toString();
         String scopes = jsonObject.get("scope").toString();
-
-
+        JWT parse = JWTParser.parse(idToken);
+        String subject = parse.getJWTClaimsSet().getSubject();
         OidcIdToken oidcIdToken = OidcIdToken.withTokenValue(idToken)
                 .tokenValue(idToken)
+                .subject(subject)
                 .build();
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, oauth2TokenId, null, null);
         String[] scope = scopeParsing(scopes);
@@ -119,25 +128,7 @@ public class KakaoService {
         return jwtTokenProvider.genAccessTokenAndRefreshToken(byUsername);
     }
 
-    private void loginOidc(String response, String redirectUri) throws JsonProcessingException {
-        JSONObject jsonObject = Json.mapper().readValue(response, JSONObject.class);
-        String idToken = jsonObject.get("id_token").toString();
-        String oauth2TokenId = jsonObject.get("access_token").toString();
-        String scopes = jsonObject.get("scope").toString();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer " + idToken);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<JSONObject> forEntity = restTemplate.exchange(userInfoUri, HttpMethod.GET, request, JSONObject.class);
-        String name = forEntity.getBody().get("name").toString();
-        String nickname = forEntity.getBody().get("nickname").toString();
-        System.out.println("name = " + name);
-        System.out.println("nickname = " + nickname);
-
-    }
 
     private String[] scopeParsing(String scope) {
         return scope.split(" ");
