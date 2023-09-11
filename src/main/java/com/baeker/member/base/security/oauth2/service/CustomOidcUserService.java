@@ -4,6 +4,7 @@ package com.baeker.member.base.security.oauth2.service;
 
 import com.baeker.member.base.security.oauth2.model.converters.ProviderUserRequest;
 import com.baeker.member.base.security.oauth2.model.providers.ProviderUser;
+import com.baeker.member.base.security.oauth2.users.Attributes;
 import com.baeker.member.base.security.oauth2.users.PrincipalUser;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -27,11 +28,20 @@ public class CustomOidcUserService extends AbstractOAuth2UserService implements 
                 .withClientRegistration(userRequest.getClientRegistration())
                 .userNameAttributeName("sub")
                 .build();
+//        OidcUserRequest oidcUserRequest =
+//                new OidcUserRequest(clientRegistration, userRequest.getAccessToken(),
+//                        userRequest.getIdToken(), userRequest.getAdditionalParameters());
         OidcUserRequest oidcUserRequest =
                 new OidcUserRequest(clientRegistration, userRequest.getAccessToken(),
-                        userRequest.getIdToken(), userRequest.getAdditionalParameters());
+                        userRequest.getIdToken());
+
         OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService = new OidcUserService();
-        OidcUser oidcUser = oidcUserService.loadUser(oidcUserRequest);
+        OidcUser oidcUser = null;
+        try {
+            oidcUser = oidcUserService.loadUser(oidcUserRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         ProviderUserRequest providerUserRequest = new ProviderUserRequest(clientRegistration,oidcUser);
         ProviderUser providerUser = providerUser(providerUserRequest);

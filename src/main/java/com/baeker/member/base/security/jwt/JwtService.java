@@ -1,6 +1,6 @@
 package com.baeker.member.base.security.jwt;
 
-import com.baeker.member.base.error.exception.RefreshTokenExpirationException;
+import com.baeker.member.base.error.exception.jwt.RefreshTokenExpirationException;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
@@ -62,10 +62,7 @@ public class JwtService {
             throw new RefreshTokenExpirationException();
         }
 
-        Map<String, String> map = jwtProvider.genAccessTokenAndRefreshToken(member);
-        String accessToken = map.get("accessToken");
-        String responseRefreshToken = map.get("refreshToken");
-        return new JwtTokenResponse(accessToken, responseRefreshToken);
+        return jwtProvider.genAccessTokenAndRefreshToken(member);
     }
 
     private void forceAuthentication(Member member) {

@@ -3,6 +3,7 @@ package com.baeker.member.base.security.jwt;
 import com.baeker.member.base.util.Ut;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
+import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -87,16 +88,11 @@ public class JwtTokenProvider {
         return Ut.json.toMap(body);
     }
 
-    public Map<String, String> genAccessTokenAndRefreshToken(Member member) {
+    public JwtTokenResponse genAccessTokenAndRefreshToken(Member member) {
         String accessToken = genToken(member.toClaims(), ACCESS_TOKEN_VALIDATION_SECOND);
         String refreshToken = genToken(member.toClaims(), REFRESH_TOKEN_VALIDATION_SECOND);
         String key = String.valueOf(member.getId());
         redisUt.setValue(key, refreshToken, REFRESH_TOKEN_VALIDATION_SECOND);
-
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshToken);
-
-        return tokens;
+        return new JwtTokenResponse(accessToken, refreshToken);
     }
 }

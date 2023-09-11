@@ -5,6 +5,7 @@ import com.baeker.member.base.security.oauth2.service.CustomOidcUserService;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
+import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Value("${custom.front.url}")
     private String FRONT_URL;
     private final MemberService memberService;
-    private final CustomOidcUserService customOidcUserService;
+//    private final CustomOidcUserService customOidcUserService;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisUt redisUt;
@@ -47,10 +48,10 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         member = memberService.findByUsername(user.getName());
 
-        Map<String, String> tokens = jwtTokenProvider.genAccessTokenAndRefreshToken(member);
+        JwtTokenResponse token = jwtTokenProvider.genAccessTokenAndRefreshToken(member);
 
-        String accessToken = tokens.get("accessToken");
-        String refreshToken = tokens.get("refreshToken");
+        String accessToken = token.accessToken();
+        String refreshToken = token.refreshToken();
         Long memberId = member.getId();
         boolean baekJoonConnect = false;
         if (member.getBaekJoonName() != null) baekJoonConnect = true;
