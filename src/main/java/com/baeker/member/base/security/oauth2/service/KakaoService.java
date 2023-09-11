@@ -6,6 +6,7 @@ import com.baeker.member.base.security.jwt.JwtService;
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
 import com.baeker.member.base.security.oauth2.model.enums.OAuth2Config;
 import com.baeker.member.base.security.oauth2.model.social.KakaoUser;
+import com.baeker.member.base.security.oauth2.users.dto.SocialLoginResponse;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
@@ -74,7 +75,7 @@ public class KakaoService{
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtTokenResponse kakaoLogin(String code, String redirectUri) {
+    public SocialLoginResponse kakaoLogin(String code, String redirectUri) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add(CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
@@ -83,18 +84,18 @@ public class KakaoService{
 
         String response = restTemplate.postForObject(tokenUri, request, String.class);
         log.info("카카오 로그인 response : {}", response);
-        JwtTokenResponse jwtTokenResponse = null;
+        SocialLoginResponse socialLoginResponse = null;
         try {
-            jwtTokenResponse = getOidcTokenId(response, redirectUri);
+            socialLoginResponse = getOidcTokenId(response, redirectUri);
 //            loginOidc(response, redirectUri);
         } catch (JsonProcessingException | ParseException e) {
             throw new JwtCreateException(JWT_CREATE_EXCEPTION.getMessage());
         }
-        return jwtTokenResponse;
+        return socialLoginResponse;
     }
 
 
-    private JwtTokenResponse getOidcTokenId(String response, String redirectUri) throws JsonProcessingException, ParseException {
+    private SocialLoginResponse getOidcTokenId(String response, String redirectUri) throws JsonProcessingException, ParseException {
         JSONObject jsonObject = Json.mapper().readValue(response, JSONObject.class);
         String idToken = jsonObject.get("id_token").toString();
         String oauth2TokenId = jsonObject.get("access_token").toString();
@@ -125,7 +126,10 @@ public class KakaoService{
         OidcUserRequest oidcUserRequest = new OidcUserRequest(clientRegistration, oAuth2AccessToken, oidcIdToken);
         OidcUser oidcUser = oidcUserService.loadUser(oidcUserRequest);
         Member byUsername = memberService.findByUsername(oidcUser.getName());
-        return jwtTokenProvider.genAccessTokenAndRefreshToken(byUsername);
+        JwtTokenResponse token = jwtTokenProvider.genAccessTokenAndRefreshToken(byUsername);
+        boolean baekJoonConnect = false;
+        if (byUsername.getBaekJoonName() != null) baekJoonConnect = true;
+        return new SocialLoginResponse(token.accessToken(), token.refreshToken(), byUsername.getId(), baekJoonConnect);
     }
 
 

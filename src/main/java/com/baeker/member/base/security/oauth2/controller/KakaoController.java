@@ -4,6 +4,7 @@ import com.baeker.member.base.security.jwt.JwtTokenProvider;
 import com.baeker.member.base.security.oauth2.model.providers.ProviderUser;
 import com.baeker.member.base.security.oauth2.service.CustomOAuth2UserService;
 import com.baeker.member.base.security.oauth2.service.KakaoService;
+import com.baeker.member.base.security.oauth2.users.dto.SocialLoginResponse;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
@@ -24,7 +25,7 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
     @GetMapping("/kakao")
-    public JwtTokenResponse kakaoLogin(String code, String redirectUri) {
+    public SocialLoginResponse kakaoLogin(String code, String redirectUri) {
         return kakaoService.kakaoLogin(code, redirectUri);
 //        String name = oAuth2User.getName();
 //        Member byUsername = memberService.findByUsername(name);
