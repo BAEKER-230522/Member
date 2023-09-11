@@ -21,15 +21,11 @@ import java.util.Map;
 @RequestMapping("/oauth2/authorization")
 public class KakaoController {
 
-    private final CustomOAuth2UserService oAuth2UserService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final MemberService memberService;
     private final KakaoService kakaoService;
 
     @GetMapping("/kakao")
-    public void kakaoLogin(String code, String redirectUri) {
-        kakaoService.kakaoLogin(code, redirectUri);
-
+    public JwtTokenResponse kakaoLogin(String code, String redirectUri) {
+        return kakaoService.kakaoLogin(code, redirectUri);
 //        String name = oAuth2User.getName();
 //        Member byUsername = memberService.findByUsername(name);
 //        Map<String, String> mapToken = jwtTokenProvider.genAccessTokenAndRefreshToken(byUsername);
