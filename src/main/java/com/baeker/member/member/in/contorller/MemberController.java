@@ -161,6 +161,7 @@ public class MemberController {
             @RequestHeader("refreshToken") @Valid String refreshToken
     ) throws IOException {
         JwtTokenResponse newAccessToken = jwtService.createNewAccessToken(refreshToken);
+        log.info(newAccessToken.accessToken() + "new access token 발급 완료");
         return RsData.successOf(newAccessToken);
     }
 }
