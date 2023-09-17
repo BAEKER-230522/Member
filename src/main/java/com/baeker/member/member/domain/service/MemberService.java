@@ -176,6 +176,7 @@ public class MemberService {
     /**
      * * UPDATE METHOD **
      * nickname, about, profile img 수정
+     * nickname, about 수정
      * update my study
      * delete my study
      * update lastSolvedProblemId
@@ -202,6 +203,16 @@ public class MemberService {
                         imgUrl
                 );
 
+        return memberRepository.save(member);
+    }
+
+    //-- nickname, about 수정 --//
+    public Member updateProfile(UpdateReqDto dto) {
+        Member member = this.findById(dto.getId())
+                .updateProfile(
+                        dto.getNickname(),
+                        dto.getAbout()
+                );
         return memberRepository.save(member);
     }
 

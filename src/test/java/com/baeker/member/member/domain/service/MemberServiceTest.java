@@ -7,7 +7,9 @@ import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.BaekJoonDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
+import com.baeker.member.member.in.reqDto.UpdateReqDto;
 import com.baeker.member.member.in.resDto.MemberDto;
+import com.baeker.member.member.in.resDto.UpdateResDto;
 import com.baeker.member.member.out.SnapshotRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -160,6 +162,27 @@ class MemberServiceTest {
 
         List<MemberDto> page3 = memberService.findMemberRanking(2, 2);
         assertThat(page3.get(0).getNickname()).isEqualTo("member");
+    }
+
+    @Test
+    @DisplayName("member 닉네임, 소개 수정")
+    void no06() {
+        Member member = createMember();
+        updateProfile(member.getId(), "수정 1", "수정 2");
+
+        Member findMember = memberService.findById(member.getId());
+
+        assertThat(findMember.getNickname()).isEqualTo("수정 1");
+        assertThat(findMember.getAbout()).isEqualTo("수정 2");
+    }
+
+    private Member updateProfile(Long id, String nickname, String about) {
+        UpdateReqDto dto = new UpdateReqDto();
+        dto.setId(id);
+        dto.setNickname(nickname);
+        dto.setAbout(about);
+
+        return memberService.updateProfile(dto);
     }
 
     private Member createMember() {
