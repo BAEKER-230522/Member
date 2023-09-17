@@ -176,6 +176,7 @@ public class MemberService {
     /**
      * * UPDATE METHOD **
      * nickname, about, profile img 수정
+     * nickname, about 수정
      * update my study
      * delete my study
      * update lastSolvedProblemId
@@ -192,16 +193,29 @@ public class MemberService {
     //-- nickname, about, profile img 수정 --//
     @Transactional
     public Member update(UpdateReqDto dto, MultipartFile img) {
+        Member member = this.findById(dto.getId());
+        String imgUrl = member.getProfileImg();
 
-        String imgUrl = this.s3Upload(img, dto.getId());
+        if (!img.isEmpty())
+            imgUrl = this.s3Upload(img, dto.getId());
 
+        member.update(
+                dto.getNickname(),
+                dto.getAbout(),
+                imgUrl
+        );
+
+        return memberRepository.save(member);
+    }
+
+    //-- nickname, about 수정 --//
+    @Transactional
+    public Member updateProfile(UpdateReqDto dto) {
         Member member = this.findById(dto.getId())
-                .update(
+                .updateProfile(
                         dto.getNickname(),
-                        dto.getAbout(),
-                        imgUrl
+                        dto.getAbout()
                 );
-
         return memberRepository.save(member);
     }
 
@@ -267,7 +281,8 @@ public class MemberService {
         }
 
         BaekJoonDto dto = new BaekJoonDto(event);
-        this.updateSnapshot(member, dto);
+        String today = LocalDateTime.now().getDayOfWeek().toString();
+        this.updateSnapshot(member, dto, today);
 
         Member updateMember = member.connectBaekJoon(event);
         return memberRepository.save(updateMember).getBaekJoonName();
@@ -279,7 +294,8 @@ public class MemberService {
         Member member = this.findById(event.getId());
 
         BaekJoonDto dto = new BaekJoonDto(event);
-        this.updateSnapshot(member, dto);
+        String today = LocalDateTime.now().getDayOfWeek().toString();
+        this.updateSnapshot(member, dto, today);
 
         memberRepository.save(member.updateSolvedCount(event));
     }
@@ -294,7 +310,8 @@ public class MemberService {
             throw new NotFoundException("백준 연동 아이디가 없는 회원입니다.");
 
         BaekJoonDto dto = new BaekJoonDto(reqDto);
-        this.updateSnapshot(member, dto);
+        String today = LocalDateTime.now().getDayOfWeek().toString();
+        this.updateSnapshot(member, dto, today);
 
         return memberRepository.save(member.updateSolvedCount(reqDto));
     }
@@ -305,9 +322,13 @@ public class MemberService {
         member.addMyStudy(event.getMyStudyId());
     }
 
+    // test 용 update snapshot //
+    public void updateSnapshotTest(Member member, BaekJoonDto dto, String today) {
+        this.updateSnapshot(member, dto, today);
+    }
+
     // update snapshot //
-    private void updateSnapshot(Member member, BaekJoonDto dto) {
-        String today = LocalDateTime.now().getDayOfWeek().toString();
+    private void updateSnapshot(Member member, BaekJoonDto dto, String today) {
         List<MemberSnapshot> snapshots = member.getSnapshotList();
 
         if (snapshots.size() == 0 || !snapshots.get(0).getDayOfWeek().equals(today)) {
