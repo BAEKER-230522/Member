@@ -207,6 +207,7 @@ public class MemberService {
     }
 
     //-- nickname, about 수정 --//
+    @Transactional
     public Member updateProfile(UpdateReqDto dto) {
         Member member = this.findById(dto.getId())
                 .updateProfile(
