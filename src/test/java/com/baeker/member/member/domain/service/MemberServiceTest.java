@@ -1,5 +1,6 @@
 package com.baeker.member.member.domain.service;
 
+import com.baeker.member.base.request.RsData;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
@@ -7,13 +8,21 @@ import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.BaekJoonDto;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
+import com.baeker.member.member.in.reqDto.UpdateReqDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.out.SnapshotRepository;
+import com.baeker.member.member.out.feign.SolvedAcClient;
+import com.baeker.member.member.out.resDto.ConBaekjoonResDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.convert.DataSizeUnit;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +30,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
 @Transactional
+@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 class MemberServiceTest {
 
     @Autowired
@@ -33,6 +46,22 @@ class MemberServiceTest {
     private ApplicationEventPublisher publisher;
     @Autowired
     private SnapshotRepository snapshotRepository;
+
+    @MockBean
+    private SolvedAcClient solvedAcClient;
+
+    @BeforeEach
+    void beforeEach() {
+        ConBaekjoonResDto dto = new ConBaekjoonResDto();
+        dto.setBronze(1);
+        dto.setGold(1);
+        dto.setSilver(1);
+        dto.setRuby(1);
+        dto.setDiamond(1);
+        dto.setPlatinum(1);
+        when(solvedAcClient.validName(anyString()))
+                .thenReturn(new RsData<>("S-1", "성공", dto));
+    }
 
 
     @Test
@@ -83,7 +112,7 @@ class MemberServiceTest {
     void no03() {
         Member member = createMember();
         Member findMember = memberService.findById(member.getId());
-        publisher.publishEvent(new ConBjEvent(this, member.getId(), "baek",1, 1, 1, 1, 1, 1));
+        publisher.publishEvent(new ConBjEvent(this, member.getId(), "baek", 1, 1, 1, 1, 1, 1));
 
         assertThat(findMember.solvedCount()).isEqualTo(6);
 
@@ -102,34 +131,29 @@ class MemberServiceTest {
     @DisplayName("snapshot 날짜별 저장과 기록 삭제")
     void no04() {
         Member member = createMember();
-        Member findMember = memberService.findById(member.getId());
-        publisher.publishEvent(new ConBjEvent(this, member.getId(), "baek",1, 1, 1, 1, 1, 1));
+        memberService.connectBaekjoon(member.getId(), "test123");
+        assertThat(member.getBaekJoonName()).isEqualTo("test123");
 
-        // test 용 스냅샷 6일치 생산
-        for (int i = 1; i < 7; i++)
-            testSnapshot(findMember, i);
+        for (int i = 0; i < 7; i++)
+            updateSnapshot(member, i);
 
-        List<MemberSnapshot> allSnapshot = memberService.findAllSnapshot(findMember);
-        assertThat(findMember.getSnapshotList().size()).isEqualTo(7);
-        assertThat(allSnapshot.size()).isEqualTo(7);
+        List<MemberSnapshot> list1 = member.getSnapshotList();
+        assertThat(list1.size()).isEqualTo(7);
 
-        AddSolvedCountEvent event = new AddSolvedCountEvent(
-                this, member.getId(),
-                1, 1, 1, 1, 1, 1
-        );
-        publisher.publishEvent(event);
+        String day = dayCalculator(0);
+        assertThat(list1.get(6).getDayOfWeek()).isEqualTo(day);
+        day = dayCalculator(6);
+        assertThat(list1.get(0).getDayOfWeek()).isEqualTo(day);
 
-        List<MemberSnapshot> allSnapshot1 = memberService.findAllSnapshot(findMember);
-        assertThat(findMember.getSnapshotList().size()).isEqualTo(7);
-        assertThat(allSnapshot1.size()).isEqualTo(7);
+        updateSnapshot(member, 0);
 
-        publisher.publishEvent(new AddSolvedCountEvent(this, member.getId(),1, 1, 1, 1, 1, 1));
+        List<MemberSnapshot> list2 = member.getSnapshotList();
+        assertThat(list2.size()).isEqualTo(7);
 
-        List<MemberSnapshot> allSnapshot2 = memberService.findAllSnapshot(member);
-        assertThat(findMember.getSnapshotList().size()).isEqualTo(7);
-        assertThat(allSnapshot2.size()).isEqualTo(7);
-
-        assertThat(findMember.getSnapshotList().get(0).getDayOfWeek()).isEqualTo(LocalDateTime.now().getDayOfWeek().toString());
+        day = dayCalculator(1);
+        assertThat(list2.get(6).getDayOfWeek()).isEqualTo(day);
+        day = dayCalculator(0);
+        assertThat(list2.get(0).getDayOfWeek()).isEqualTo(day);
     }
 
     @Test
@@ -162,6 +186,27 @@ class MemberServiceTest {
         assertThat(page3.get(0).getNickname()).isEqualTo("member");
     }
 
+    @Test
+    @DisplayName("member 닉네임, 소개 수정")
+    void no06() {
+        Member member = createMember();
+        updateProfile(member.getId(), "수정 1", "수정 2");
+
+        Member findMember = memberService.findById(member.getId());
+
+        assertThat(findMember.getNickname()).isEqualTo("수정 1");
+        assertThat(findMember.getAbout()).isEqualTo("수정 2");
+    }
+
+    private Member updateProfile(Long id, String nickname, String about) {
+        UpdateReqDto dto = new UpdateReqDto();
+        dto.setId(id);
+        dto.setNickname(nickname);
+        dto.setAbout(about);
+
+        return memberService.updateProfile(dto);
+    }
+
     private Member createMember() {
         JoinReqDto reqDto = JoinReqDto.createJoinDto("user", "member", "1234", "BAEKER", "aaa@aa.com", "123", "img");
         Member createMember = memberService.create(reqDto);
@@ -172,8 +217,18 @@ class MemberServiceTest {
         JoinReqDto reqDto = JoinReqDto.createJoinDto(user, nickname, "1234", "BAEKER", "aaa@aa.com", "123", "img");
         Member createMember = memberService.create(reqDto);
 
-        publisher.publishEvent(new ConBjEvent(this, createMember.getId(), baekjoon, solved, 0,0,0,0,0));
+        publisher.publishEvent(new ConBjEvent(this, createMember.getId(), baekjoon, solved, 0, 0, 0, 0, 0));
         return createMember;
+    }
+
+    private void updateSnapshot(Member member, int addDate) {
+        BaekJoonDto dto = new BaekJoonDto(member);
+        String today = dayCalculator(addDate);
+        memberService.updateSnapshotTest(member, dto, today);
+    }
+
+    String dayCalculator(int addDate) {
+        return LocalDateTime.now().plusDays(addDate).getDayOfWeek().toString();
     }
 
     // test 용 스냅샷 생성 //
