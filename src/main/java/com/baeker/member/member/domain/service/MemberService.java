@@ -193,15 +193,17 @@ public class MemberService {
     //-- nickname, about, profile img 수정 --//
     @Transactional
     public Member update(UpdateReqDto dto, MultipartFile img) {
+        Member member = this.findById(dto.getId());
+        String imgUrl = member.getProfileImg();
 
-        String imgUrl = this.s3Upload(img, dto.getId());
+        if (!img.isEmpty())
+            imgUrl = this.s3Upload(img, dto.getId());
 
-        Member member = this.findById(dto.getId())
-                .update(
-                        dto.getNickname(),
-                        dto.getAbout(),
-                        imgUrl
-                );
+        member.update(
+                dto.getNickname(),
+                dto.getAbout(),
+                imgUrl
+        );
 
         return memberRepository.save(member);
     }
@@ -322,7 +324,7 @@ public class MemberService {
 
     // test 용 update snapshot //
     public void updateSnapshotTest(Member member, BaekJoonDto dto, String today) {
-        this.updateSnapshot(member , dto, today);
+        this.updateSnapshot(member, dto, today);
     }
 
     // update snapshot //
