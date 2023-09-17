@@ -1,5 +1,6 @@
 package com.baeker.member.member.in.reqDto;
 
+import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import lombok.AllArgsConstructor;
@@ -48,5 +49,16 @@ public class BaekJoonDto {
         this.diamond = dto.getDiamond();
         this.ruby = dto.getRuby();
         this.platinum = dto.getPlatinum();
+    }
+
+    public BaekJoonDto(Member member) {
+        this.id = member.getId();
+        this.baekJoonName = member.getBaekJoonName();
+        this.bronze = member.getBronze();
+        this.silver = member.getSilver();
+        this.gold = member.getGold();
+        this.diamond = member.getDiamond();
+        this.ruby = member.getRuby();
+        this.platinum = member.getPlatinum();
     }
 }
