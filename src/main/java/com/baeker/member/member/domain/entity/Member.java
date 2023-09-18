@@ -134,15 +134,6 @@ public class Member extends BaseEntity {
                 .build();
     }
 
-    // nickname, about, 수정 //
-    public Member updateProfile(String nickname, String about) {
-        return this.toBuilder()
-                .nickname(nickname)
-                .modifyDate(now())
-                .about(about)
-                .build();
-    }
-
     // my study 추가 //
     public void addMyStudy(Long myStudyId) {
         this.myStudies.add(myStudyId);

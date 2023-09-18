@@ -186,27 +186,6 @@ class MemberServiceTest {
         assertThat(page3.get(0).getNickname()).isEqualTo("member");
     }
 
-    @Test
-    @DisplayName("member 닉네임, 소개 수정")
-    void no06() {
-        Member member = createMember();
-        updateProfile(member.getId(), "수정 1", "수정 2");
-
-        Member findMember = memberService.findById(member.getId());
-
-        assertThat(findMember.getNickname()).isEqualTo("수정 1");
-        assertThat(findMember.getAbout()).isEqualTo("수정 2");
-    }
-
-    private Member updateProfile(Long id, String nickname, String about) {
-        UpdateReqDto dto = new UpdateReqDto();
-        dto.setId(id);
-        dto.setNickname(nickname);
-        dto.setAbout(about);
-
-        return memberService.updateProfile(dto);
-    }
-
     private Member createMember() {
         JoinReqDto reqDto = JoinReqDto.createJoinDto("user", "member", "1234", "BAEKER", "aaa@aa.com", "123", "img");
         Member createMember = memberService.create(reqDto);
