@@ -196,27 +196,16 @@ public class MemberService {
         Member member = this.findById(dto.getId());
         String imgUrl = member.getProfileImg();
 
-        if (!img.isEmpty())
+        if (img.getSize() != 0)
             imgUrl = this.s3Upload(img, dto.getId());
 
-        member.update(
+        Member updateMember = member.update(
                 dto.getNickname(),
                 dto.getAbout(),
                 imgUrl
         );
 
-        return memberRepository.save(member);
-    }
-
-    //-- nickname, about 수정 --//
-    @Transactional
-    public Member updateProfile(UpdateReqDto dto) {
-        Member member = this.findById(dto.getId())
-                .updateProfile(
-                        dto.getNickname(),
-                        dto.getAbout()
-                );
-        return memberRepository.save(member);
+        return memberRepository.save(updateMember);
     }
 
     //-- update my study --//
