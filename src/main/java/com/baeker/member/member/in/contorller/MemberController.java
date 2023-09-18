@@ -64,6 +64,8 @@ public class MemberController {
     ) {
         log.info("member nickname, about, img update 요청 확인 id = {}", dto.getId());
 
+        log.info("img :::: img size = {} / name = {} / original file name = {} / resource = {}", img.getSize(), img.getName(), img.getOriginalFilename(), img.getResource());
+
         Member member = memberService.update(dto, img);
         UpdateResDto response = new UpdateResDto(member);
 
