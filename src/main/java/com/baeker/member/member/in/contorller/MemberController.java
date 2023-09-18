@@ -64,9 +64,21 @@ public class MemberController {
     ) {
         log.info("member nickname, about, img update 요청 확인 id = {}", dto.getId());
 
-        log.info("img :::: img size = {} / name = {} / original file name = {} / resource = {}", img.getSize(), img.getName(), img.getOriginalFilename(), img.getResource());
-
         Member member = memberService.update(dto, img);
+        UpdateResDto response = new UpdateResDto(member);
+
+        log.info("member update 완료");
+        return RsData.successOf(response);
+    }
+
+    @Operation(summary = "닉네임, 자기 소개 업데이트")
+    @PostMapping("/v1/profile")
+    public RsData<UpdateResDto> updateProfile(
+            @RequestBody @Valid UpdateReqDto dto
+    ) {
+        log.info("member nickname, about update 요청 확인 id = {}", dto.getId());
+
+        Member member = memberService.updateProfile(dto);
         UpdateResDto response = new UpdateResDto(member);
 
         log.info("member update 완료");
