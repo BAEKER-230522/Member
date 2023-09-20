@@ -141,9 +141,9 @@ class MemberServiceTest {
         assertThat(list1.size()).isEqualTo(7);
 
         String day = dayCalculator(0);
-        assertThat(list1.get(6).getDayOfWeek()).isEqualTo(day);
-        day = dayCalculator(6);
         assertThat(list1.get(0).getDayOfWeek()).isEqualTo(day);
+        day = dayCalculator(6);
+        assertThat(list1.get(6).getDayOfWeek()).isEqualTo(day);
 
         updateSnapshot(member, 0);
 
@@ -151,9 +151,9 @@ class MemberServiceTest {
         assertThat(list2.size()).isEqualTo(7);
 
         day = dayCalculator(1);
-        assertThat(list2.get(6).getDayOfWeek()).isEqualTo(day);
-        day = dayCalculator(0);
         assertThat(list2.get(0).getDayOfWeek()).isEqualTo(day);
+        day = dayCalculator(0);
+        assertThat(list2.get(6).getDayOfWeek()).isEqualTo(day);
     }
 
     @Test

@@ -99,11 +99,6 @@ public class MemberFindController {
                 .map(s -> new SnapshotResDto(s))
                 .toList();
 
-//        List<SnapshotResDto> resDtoList = memberService.findAllSnapshot(member)
-//                .stream()
-//                .map(s -> new SnapshotResDto(s))
-//                .toList();
-
         log.info("Snapshot 일주일 분 응답 완료 size = {}", resDtoList.size());
         return RsData.of("S-1", "Dto Size = " + resDtoList.size(), resDtoList);
     }

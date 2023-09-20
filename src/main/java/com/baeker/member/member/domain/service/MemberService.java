@@ -164,7 +164,7 @@ public class MemberService {
         if (snapshots.size() == 0)
             throw new NotFoundException("백준 연동이 되어있지 않은 회원 입니다.");
 
-        return member.getSnapshotList().get(0);
+        return member.getSnapshotList().get(snapshots.size() - 1);
     }
 
     //-- find member ranking --//
@@ -306,7 +306,7 @@ public class MemberService {
             throw new NotFoundException("백준 연동 아이디가 없는 회원입니다.");
 
         BaekJoonDto dto = new BaekJoonDto(reqDto);
-        String today = LocalDateTime.now().getDayOfWeek().toString();
+        String today = LocalDateTime.now().plusDays(reqDto.getAdd()).getDayOfWeek().toString();
         this.updateSnapshot(member, dto, today);
 
         return memberRepository.save(member.updateSolvedCount(reqDto));
@@ -327,17 +327,17 @@ public class MemberService {
     private void updateSnapshot(Member member, BaekJoonDto dto, String today) {
         List<MemberSnapshot> snapshots = member.getSnapshotList();
 
-        if (snapshots.size() == 0 || !snapshots.get(0).getDayOfWeek().equals(today)) {
+        if (snapshots.size() == 0 || !snapshots.get(snapshots.size() - 1).getDayOfWeek().equals(today)) {
             MemberSnapshot snapshot = MemberSnapshot.create(member, dto, today);
             snapshotRepository.save(snapshot);
 
         } else {
-            MemberSnapshot snapshot = snapshots.get(0).update(dto);
+            MemberSnapshot snapshot = snapshots.get(snapshots.size() - 1).update(dto);
             snapshotRepository.save(snapshot);
         }
 
         if (snapshots.size() == 8) {
-            MemberSnapshot snapshot = snapshots.get(7);
+            MemberSnapshot snapshot = snapshots.get(0);
             snapshots.remove(snapshot);
             snapshotRepository.delete(snapshot);
         }
