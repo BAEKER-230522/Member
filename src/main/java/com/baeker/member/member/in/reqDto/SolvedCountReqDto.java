@@ -11,4 +11,5 @@ public class SolvedCountReqDto {
     private int diamond;
     private int ruby;
     private int platinum;
+    private int add;
 }

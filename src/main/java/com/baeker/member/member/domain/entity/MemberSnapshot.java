@@ -37,7 +37,7 @@ public class MemberSnapshot extends BaseEntity{
                 .platinum(dto.getPlatinum())
                 .build();
 
-        member.getSnapshotList().add(0, snapshot);
+        member.getSnapshotList().add(snapshot);
         return snapshot;
     }
 
