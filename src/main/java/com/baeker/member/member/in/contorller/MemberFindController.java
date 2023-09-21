@@ -50,7 +50,7 @@ public class MemberFindController {
     }
 
 
-    //-- find all for scheduler--//
+    //-- 백준 연동한 모든 회원 조회 --//
     @GetMapping("/v1/all")
     public RsData<List<SchedulerResDto>> findAllForScheduler() {
         log.info("모든 Member 조회 요청 확인");
