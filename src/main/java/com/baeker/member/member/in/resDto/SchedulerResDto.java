@@ -15,6 +15,7 @@ public class SchedulerResDto {
     private int ruby;
     private int platinum;
     private int solvedCount;
+    private int lastSolvedProblemId;
 
     //-- get solved count --//
     private int getSolved() {
@@ -23,7 +24,7 @@ public class SchedulerResDto {
 
     //-- mapping query dsl --//
     @QueryProjection
-    public SchedulerResDto(Long id, String baekJoonName, int bronze, int silver, int gold, int diamond, int ruby, int platinum) {
+    public SchedulerResDto(Long id, String baekJoonName, int bronze, int silver, int gold, int diamond, int ruby, int platinum, int lstSolvedProblemId) {
         this.id = id;
         this.baekJoonName = baekJoonName;
         this.bronze = bronze;
@@ -33,5 +34,6 @@ public class SchedulerResDto {
         this.ruby = ruby;
         this.platinum = platinum;
         this.solvedCount = getSolved();
+        this.lastSolvedProblemId = lstSolvedProblemId;
     }
 }

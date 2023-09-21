@@ -29,7 +29,17 @@ public class MemberQueryRepository {
     //-- 백준 연동한 모든 회원 조회 --//
     public List<SchedulerResDto> findAllConBJ() {
         return query
-                .select(new QSchedulerResDto(m.id, m.baekJoonName, m.bronze, m.silver, m.gold, m.diamond, m.ruby, m.platinum))
+                .select(new QSchedulerResDto(
+                        m.id,
+                        m.baekJoonName,
+                        m.bronze,
+                        m.silver,
+                        m.gold,
+                        m.diamond,
+                        m.ruby,
+                        m.platinum,
+                        m.lastSolvedProblemId
+                ))
                 .from(m)
                 .where(m.baekJoonName.isNotNull())
                 .fetch();
