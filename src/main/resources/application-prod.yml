@@ -2,7 +2,7 @@ spring:
   data:
     redis:
       port: 6379
-      host: redis
+      host: bk-redis.1ll.ca
   config:
     activate:
       on-profile: prod
