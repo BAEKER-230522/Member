@@ -6,6 +6,7 @@ import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtService {
     private final RedisUt redisUt;
     private final MemberService memberService;
@@ -54,9 +56,10 @@ public class JwtService {
 
         long id = (int) claims.get("id");
         member = memberService.findById(id);
-        String redisSelectId = ""+id;
+        String redisSelectId = String.valueOf(id);
         Long ttl = redisUt.getExpire(redisSelectId);
-
+        log.info("memberId: {}", redisSelectId);
+        log.info("ttl: {}", ttl);
         // 리프레시 토큰까지 만료되었거나 키가 존재하지 않는 경우
         if (ttl < 0) {
             throw new RefreshTokenExpirationException();
