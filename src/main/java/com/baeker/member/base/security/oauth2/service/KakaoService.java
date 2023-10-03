@@ -1,13 +1,8 @@
 package com.baeker.member.base.security.oauth2.service;
 
-import com.baeker.member.base.error.ErrorResponse;
 import com.baeker.member.base.error.exception.jwt.JwtCreateException;
-import com.baeker.member.base.security.jwt.JwtService;
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
-import com.baeker.member.base.security.oauth2.model.enums.OAuth2Config;
-import com.baeker.member.base.security.oauth2.model.social.KakaoUser;
 import com.baeker.member.base.security.oauth2.users.dto.SocialLoginResponse;
-import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
@@ -19,33 +14,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.security.Provider;
 import java.text.ParseException;
-import java.util.Base64;
-import java.util.Map;
 
 import static com.baeker.member.base.error.ErrorResponse.JWT_CREATE_EXCEPTION;
 import static com.baeker.member.base.security.oauth2.model.enums.OAuth2Config.SocialType.KAKAO;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @Service
@@ -87,7 +71,7 @@ public class KakaoService{
         SocialLoginResponse socialLoginResponse = null;
         try {
             socialLoginResponse = getOidcTokenId(response, redirectUri);
-//            loginOidc(response, redirectUri);
+
         } catch (JsonProcessingException | ParseException e) {
             throw new JwtCreateException(JWT_CREATE_EXCEPTION.getMessage());
         }
@@ -108,7 +92,18 @@ public class KakaoService{
                 .build();
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, oauth2TokenId, null, null);
         String[] scope = scopeParsing(scopes);
-        ClientRegistration clientRegistration = ClientRegistration.withRegistrationId(KAKAO.getSocialName())
+        ClientRegistration clientRegistration = setClientRegistration(redirectUri, scope);
+
+        OidcUserRequest oidcUserRequest = new OidcUserRequest(clientRegistration, oAuth2AccessToken, oidcIdToken);
+        OidcUser oidcUser = oidcUserService.loadUser(oidcUserRequest);
+        Member byUsername = memberService.findByUsername(oidcUser.getName());
+        JwtTokenResponse token = jwtTokenProvider.genAccessTokenAndRefreshToken(byUsername);
+        boolean baekJoonConnect = byUsername.getBaekJoonName() != null;
+        return new SocialLoginResponse(token.accessToken(), token.refreshToken(), byUsername.getId(), baekJoonConnect);
+    }
+
+    private ClientRegistration setClientRegistration(String redirectUri, String[] scope) {
+        return ClientRegistration.withRegistrationId(KAKAO.getSocialName())
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .authorizationGrantType(authorizationGrantType)
@@ -123,16 +118,7 @@ public class KakaoService{
                 .clientAuthenticationMethod(clientAuthenticationMethod)
                 .authorizationUri(authorizationUri)
                 .build();
-        OidcUserRequest oidcUserRequest = new OidcUserRequest(clientRegistration, oAuth2AccessToken, oidcIdToken);
-        OidcUser oidcUser = oidcUserService.loadUser(oidcUserRequest);
-        Member byUsername = memberService.findByUsername(oidcUser.getName());
-        JwtTokenResponse token = jwtTokenProvider.genAccessTokenAndRefreshToken(byUsername);
-        boolean baekJoonConnect = false;
-        if (byUsername.getBaekJoonName() != null) baekJoonConnect = true;
-        return new SocialLoginResponse(token.accessToken(), token.refreshToken(), byUsername.getId(), baekJoonConnect);
     }
-
-
 
     private String[] scopeParsing(String scope) {
         return scope.split(" ");
