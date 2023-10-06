@@ -1,3 +1,37 @@
+custom:
+  front:
+    #    url: https://baeker.vercel.app
+    url: http://localhost:3000
+
+  feign:
+    solved: https://solved.1ll.ca/api/solved
+    study: http://localhost:8082/api/study
+
+  s3:
+    storage: local
+    bucket: baeker-local
+
+  redis:
+    host: localhost
+    pw:
+
+  kafka:
+    gateway: bk.1ll.ca
+    server: localhost
+
+  jwt:
+    secret-key: ENC(+GbV3Ykx/t5XFlaFHBZnXTzsSf9b3YChS2cVPTvCgwQmevtbB1Hfw91VMC/fTizxVssJvYiAMeQICsuoSrH5zNLh/jxJsXq/)
+
+  db:
+    url: jdbc:mysql://127.0.0.1:3306/bk__member?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    usr: ENC(MrlF9UZUaHufCgWLRE3ipQ==)
+    pw: ENC(dhw6nRBS+50xHhqPVFnZdw==)
+
+  jpa:
+    ddl-auto: create
+
+
+
 server:
   port: 8081
 
@@ -7,8 +41,9 @@ spring:
 
   data:
     redis:
-      host: redis
       port: 6379
+      host: ${custom.redis.host}
+      password: ${custom.redis.pw}
 
   application:
     name: member-service
@@ -26,7 +61,7 @@ spring:
             scope: account_email, profile_nickname, profile_image, openid
             client-name: kakao
             authorization-grant-type: authorization_code
-#            redirect-uri: https://bk.1ll.ca/login/oauth2/code/kakao #https://${custom.gateway}:443/login/oauth2/code/kakao
+#            redirect-uri: https://bk.1ll.ca/login/oauth2/code/kakao #https://${custom.kafka.gateway}:443/login/oauth2/code/kakao
 #            redirect-uri: http://localhost:3000/login #/oauth2/code/kakao
             client-authentication-method: POST
 
@@ -46,21 +81,22 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/bk__member?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
-    username: ENC(MrlF9UZUaHufCgWLRE3ipQ==)
-    password: ENC(dhw6nRBS+50xHhqPVFnZdw==)
+    url: ${custom.db.url}
+    username: ${custom.db.usr}
+    password: ${custom.db.pw}
 
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: ${custom.jpa.ddl-auto}
     properties:
       hibernate:
         format_sql: true
         show_sql: true
 
+
   kafka:
-    bootstrap-servers: ${custom.server}:9092
+    bootstrap-servers: ${custom.kafka.server}:9092
     consumer:
       group-id: member
       auto-offset-reset: earliest
@@ -78,8 +114,8 @@ cloud:
       access-key: ENC(STIByR/5dds/1MwRIrr0M9JR2yx4wX/OzrBusb1TRuM=)
       secret-key: ENC(aUDadAx1wtJza2duGCwYmYJ04lzNi33fjA8fHtde1qyeWrshkvrvdMtIFtLn5jKy1Adj7UmMTPM=)
     s3:
-      bucket: ${custom.bucket}
-      storage: ${custom.storage}
+      bucket: ${custom.s3.bucket}
+      storage: ${custom.s3.storage}
     region:
       static: ap-northeast-2
     stack:
@@ -97,22 +133,13 @@ logging.level:
     SQL: debug
     orm.jdbc.bind: trace
 
-custom:
-  gateway: 34.64.245.180
-  front:
-#    url: https://baeker.vercel.app
-    url: http://localhost:3000
-  server: 10.22.1.11 #101.101.208.240 #34.64.37.204
-  storage: ENC(ILubO430i175pGOuVoODag==)
-  bucket: ENC(oPnco32AvTLYRwP9ScYf+hXyLU2AT5v+)
-  feign:
-    solved: https://solved.1ll.ca/api/solved
-    study: http://localhost:8082/api/study
-
-  jwt:
-    secret-key: ENC(+GbV3Ykx/t5XFlaFHBZnXTzsSf9b3YChS2cVPTvCgwQmevtbB1Hfw91VMC/fTizxVssJvYiAMeQICsuoSrH5zNLh/jxJsXq/)
-
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
 
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
