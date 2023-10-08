@@ -1,4 +1,4 @@
-package com.baeker.member.member.out;
+package com.baeker.member.member.application.port.out.persistence;
 
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import org.springframework.data.jpa.repository.JpaRepository;

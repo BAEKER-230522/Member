@@ -1,7 +1,7 @@
 package com.baeker.member.member.domain.service;
 
 import com.baeker.member.member.domain.entity.Member;
-import com.baeker.member.member.out.MemberQueryRepository;
+import com.baeker.member.member.application.port.out.persistence.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

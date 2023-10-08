@@ -7,18 +7,17 @@ import com.baeker.member.base.error.exception.InvalidDuplicateException;
 import com.baeker.member.base.error.exception.NotFoundException;
 import com.baeker.member.base.request.RsData;
 import com.baeker.member.base.s3.S3Config;
+import com.baeker.member.member.application.port.out.persistence.MemberRepositoryPort;
+import com.baeker.member.member.application.port.out.persistence.SnapshotRepository;
+import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.*;
-import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
 import com.baeker.member.member.in.resDto.SnapshotQueryRepository;
-import com.baeker.member.member.out.MemberQueryRepository;
-import com.baeker.member.member.out.MemberRepository;
-import com.baeker.member.member.out.SnapshotRepository;
 import com.baeker.member.member.out.feign.SolvedAcClient;
 import com.baeker.member.member.out.resDto.ConBaekjoonResDto;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +41,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
-    private final MemberQueryRepository memberQueryRepository;
+    private final MemberRepositoryPort memberRepositoryPort;
     private final SnapshotRepository snapshotRepository;
     private final SnapshotQueryRepository snapshotQueryRepository;
     private final ApplicationEventPublisher publisher;
@@ -67,7 +65,7 @@ public class MemberService {
             throw new InvalidDuplicateException("이미 존재하는 username 입니다.");
         } catch (NotFoundException e) {
             Member member = Member.createMember(dto);
-            return memberRepository.save(member);
+            return memberRepositoryPort.save(member);
         }
     }
 
@@ -87,7 +85,7 @@ public class MemberService {
 
     //-- find by username --//
     public Member findByUsername(String username) {
-        Optional<Member> byUsername = memberRepository.findByUsername(username);
+        Optional<Member> byUsername = memberRepositoryPort.findByUsername(username);
 
         if (byUsername.isPresent())
             return byUsername.get();
@@ -97,7 +95,7 @@ public class MemberService {
 
     //-- find all --//
     public List<Member> finAll() {
-        return memberRepository.findAll();
+        return memberRepositoryPort.findAll();
     }
 
     //-- find all + paging --//
@@ -114,12 +112,12 @@ public class MemberService {
                 dto.getMaxContent(),
                 Sort.by(sorts)
         );
-        return memberRepository.findAll(pageable);
+        return memberRepositoryPort.findAll(pageable);
     }
 
     //-- find all 백준 연동한 사람만 --//
     public List<SchedulerResDto> findAllConBJ() {
-        List<SchedulerResDto> memberList = memberQueryRepository.findAllConBJ();
+        List<SchedulerResDto> memberList = memberRepositoryPort.findAllConBJ();
 
         if (memberList.size() == 0)
             throw new NotFoundException("백준 연동된 회원이 없습니다.");
@@ -129,7 +127,7 @@ public class MemberService {
 
     //-- find by id --//
     public Member findById(Long id) {
-        Optional<Member> byId = memberRepository.findById(id);
+        Optional<Member> byId = memberRepositoryPort.findById(id);
 
         if (byId.isPresent())
             return byId.get();
@@ -139,12 +137,12 @@ public class MemberService {
 
     //-- find by member id list --//
     public List<MemberDto> findByMyStudyList(List<Long> memberIds, String status) {
-        return memberQueryRepository.findByMemberList(memberIds, status);
+        return memberRepositoryPort.findByMemberList(memberIds, status);
     }
 
     //-- find by 백준 name --//
     public Member findByBaekJoonName(String baekJoonName) {
-        Optional<Member> byBaekJoonName = memberRepository.findByBaekJoonName(baekJoonName);
+        Optional<Member> byBaekJoonName = memberRepositoryPort.findByBaekJoonName(baekJoonName);
 
         if (byBaekJoonName.isPresent())
             return byBaekJoonName.get();
@@ -169,7 +167,7 @@ public class MemberService {
 
     //-- find member ranking --//
     public List<MemberDto> findMemberRanking(int page, int content) {
-        return memberQueryRepository.findMemberRanking(page, content);
+        return memberRepositoryPort.findMemberRanking(page, content);
     }
 
 
@@ -201,7 +199,7 @@ public class MemberService {
                 dto.getAbout(),
                 imgUrl
         );
-        return memberRepository.save(updateMember);
+        return memberRepositoryPort.save(updateMember);
     }
 
     //-- nickname, about 수정 --//
@@ -212,7 +210,7 @@ public class MemberService {
                         dto.getNickname(),
                         dto.getAbout()
                 );
-        return memberRepository.save(member);
+        return memberRepositoryPort.save(member);
     }
 
     //-- update my study --//
@@ -223,7 +221,7 @@ public class MemberService {
         if (member.getMyStudies().contains(dto.getMyStudyId()))
             throw new InvalidDuplicateException("이미 등록된 my study / my study id = " + dto.getMyStudyId());
 
-        return memberRepository.save(member.updateMyStudy(dto.getMyStudyId()));
+        return memberRepositoryPort.save(member.updateMyStudy(dto.getMyStudyId()));
     }
 
     //-- delete my study --//
@@ -242,7 +240,7 @@ public class MemberService {
     @Transactional
     public Member updateLastSolved(UpdateLastSolvedReqDto dto) {
         Member member = this.findById(dto.getMemberId());
-        return memberRepository.save(member.updateLastSolved(dto.getProblemId()));
+        return memberRepositoryPort.save(member.updateLastSolved(dto.getProblemId()));
     }
 
 
@@ -253,7 +251,7 @@ public class MemberService {
 
         String profileImg = s3Upload(img, id);
 
-        return memberRepository.save(member.updateProfileImg(profileImg));
+        return memberRepositoryPort.save(member.updateProfileImg(profileImg));
     }
 
     @Transactional
@@ -281,7 +279,7 @@ public class MemberService {
         this.updateSnapshot(member, dto, today);
 
         Member updateMember = member.connectBaekJoon(event);
-        return memberRepository.save(updateMember).getBaekJoonName();
+        return memberRepositoryPort.save(updateMember).getBaekJoonName();
     }
 
     //-- event : solved count update --//
@@ -293,7 +291,7 @@ public class MemberService {
         String today = LocalDateTime.now().getDayOfWeek().toString();
         this.updateSnapshot(member, dto, today);
 
-        memberRepository.save(member.updateSolvedCount(event));
+        memberRepositoryPort.save(member.updateSolvedCount(event));
     }
 
     //-- kafka 대신 임시용 api --//
@@ -309,7 +307,7 @@ public class MemberService {
         String today = LocalDateTime.now().plusDays(reqDto.getAdd()).getDayOfWeek().toString();
         this.updateSnapshot(member, dto, today);
 
-        return memberRepository.save(member.updateSolvedCount(reqDto));
+        return memberRepositoryPort.save(member.updateSolvedCount(reqDto));
     }
 
     //-- event : when create my study --//
@@ -374,7 +372,7 @@ public class MemberService {
     //-- ranking 수동 업데이트 --//
     @Transactional
     public void updateRanking() {
-        List<Member> memberList = memberQueryRepository.findMemberRanking();
+        List<Member> memberList = memberRepositoryPort.findMemberRanking();
 
         for (int i = 0; i < memberList.size(); i++)
             memberList.get(i).updateRanking(i + 1);
@@ -421,7 +419,7 @@ public class MemberService {
         member = create(dto);
 //        }
 
-        memberRepository.save(member);
+        memberRepositoryPort.save(member);
 
         return member;
     }

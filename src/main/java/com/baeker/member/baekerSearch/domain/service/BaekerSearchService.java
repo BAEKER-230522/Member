@@ -1,7 +1,7 @@
 package com.baeker.member.baekerSearch.domain.service;
 
 import com.baeker.member.baekerSearch.in.resDto.SearchResDto;
-import com.baeker.member.member.out.MemberQueryRepository;
+import com.baeker.member.member.application.port.out.persistence.MemberQueryRepository;
 import com.baeker.member.member.out.feign.StudyClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
