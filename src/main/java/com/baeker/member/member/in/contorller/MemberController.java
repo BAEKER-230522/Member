@@ -1,7 +1,7 @@
 package com.baeker.member.member.in.contorller;
 
 import com.baeker.member.base.request.RsData;
-import com.baeker.member.base.security.jwt.JwtService;
+import com.baeker.member.global.security.jwt.JwtService;
 import com.baeker.member.member.in.reqDto.*;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
@@ -26,91 +26,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final JwtService jwtService;
-
-    //-- create --//
-    @Operation(summary = "member 생성")
-    @PostMapping("/v1/create")
-    public RsData<MemberDto> create(@RequestBody @Valid JoinReqDto dto) {
-        log.info("member 생성 요청 확인 username = {}", dto.getUsername());
-
-        Member member = memberService.create(dto);
-        MemberDto createMemberDto = new MemberDto(member);
-
-        log.info("member 생성 완료 member id = {}", member.getId());
-        return RsData.successOf(createMemberDto);
-    }
-
-    //-- 백준 id 연동 --//
-    @Operation(summary = "백준 id 와 연동하기")
-    @PostMapping("/v1/connect/baekjoon/{id}")
-    public RsData connect(
-            @PathVariable Long id,
-            @RequestParam @Valid String name
-    ) {
-        log.info("member 백준 id 연동 요청 확인 id = {}, baekjoon name = {}", id, name);
-
-        Member member = memberService.connectBaekjoon(id, name);
-
-        log.info("member 백준 id 연동 성공");
-        return RsData.successOf(member.getId());
-    }
-
-    //-- update 닉네임, 소개,프로필 사진 --//
-    @Operation(summary = "닉네임, 자기 소개, 프로필 사진 업데이트")
-    @PostMapping("/v1/update")
-    public RsData<UpdateResDto> update(
-            @RequestPart @Valid UpdateReqDto dto,
-            @RequestPart MultipartFile img
-    ) {
-        log.info("member nickname, about, img update 요청 확인 id = {}", dto.getId());
-
-        Member member = memberService.update(dto, img);
-        UpdateResDto response = new UpdateResDto(member);
-
-        log.info("member update 완료");
-        return RsData.successOf(response);
-    }
-
-    @Operation(summary = "닉네임, 자기 소개 업데이트")
-    @PostMapping("/v1/profile")
-    public RsData<UpdateResDto> updateProfile(
-            @RequestBody @Valid UpdateReqDto dto
-    ) {
-        log.info("member nickname, about update 요청 확인 id = {}", dto.getId());
-
-        Member member = memberService.updateProfile(dto);
-        UpdateResDto response = new UpdateResDto(member);
-
-        log.info("member update 완료");
-        return RsData.successOf(response);
-    }
-
-    //-- update my study --//
-    @Operation(summary = "My study 추가")
-    @PostMapping("/v1/my-study")
-    public RsData myStudyUpdate(@RequestBody @Valid MyStudyReqDto dto) {
-        log.info("my study 등록 요청 확인 member = {} / my study = {}", dto.getMemberId(), dto.getMyStudyId());
-
-        Member member = memberService.updateMyStudy(dto);
-
-        log.info("my study 등록 완료");
-        return RsData.of("S-1", "my study size - " + member.getMyStudies().size());
-    }
-
-    //-- update profile img --//
-    @Operation(summary = "프로필 이미지 업데이트")
-    @PostMapping("/v1/profile-img/{id}")
-    public RsData updateProfileImg(
-            @PathVariable Long id,
-            @RequestPart MultipartFile img
-    ) {
-        log.info("profile img 수정 요청 확인");
-
-        Member member = memberService.updateImg(img, id);
-
-        log.info("profile img 수정 완료");
-        return RsData.of("S-1", " 이미지 update 완료", member.getProfileImg());
-    }
 
     //-- delete my study --//
     @Operation(summary = "My Study 제거")

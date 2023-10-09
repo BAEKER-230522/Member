@@ -22,6 +22,7 @@ import com.baeker.member.member.out.feign.SolvedAcClient;
 import com.baeker.member.member.out.resDto.ConBaekjoonResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,126 +51,6 @@ public class MemberService {
     private final S3Config s3Config;
 
 
-    /**
-     * * CREATE METHOD **
-     * member 객체 생성
-     * s3 upload
-     */
-
-    //-- create member --//
-    @Transactional
-    public Member create(JoinReqDto dto) {
-
-        try {
-            this.findByUsername(dto.getUsername());
-            throw new InvalidDuplicateException("이미 존재하는 username 입니다.");
-        } catch (NotFoundException e) {
-            Member member = Member.createMember(dto);
-            return memberRepositoryPort.save(member);
-        }
-    }
-
-
-    /**
-     * * READ METHOD **
-     * find by username
-     * find all
-     * find all + paging
-     * find by id
-     * find by member id list
-     * find by 백준 name
-     * find all snapshot / 삭제 예정
-     * find today snapshot
-     * find member ranking
-     */
-
-    //-- find by username --//
-    public Member findByUsername(String username) {
-        Optional<Member> byUsername = memberRepositoryPort.findByUsername(username);
-
-        if (byUsername.isPresent())
-            return byUsername.get();
-
-        throw new NotFoundException("존재하지 않는 username");
-    }
-
-    //-- find all --//
-    public List<Member> finAll() {
-        return memberRepositoryPort.findAll();
-    }
-
-    //-- find all + paging --//
-    public Page<Member> getAll(PageReqDto dto) {
-        ArrayList<Sort.Order> sorts = new ArrayList<>();
-
-        if (dto.isAsc())
-            sorts.add(Sort.Order.asc(dto.getStandard()));
-        else
-            sorts.add(Sort.Order.desc(dto.getStandard()));
-
-        Pageable pageable = PageRequest.of(
-                dto.getPage(),
-                dto.getMaxContent(),
-                Sort.by(sorts)
-        );
-        return memberRepositoryPort.findAll(pageable);
-    }
-
-    //-- find all 백준 연동한 사람만 --//
-    public List<SchedulerResDto> findAllConBJ() {
-        List<SchedulerResDto> memberList = memberRepositoryPort.findAllConBJ();
-
-        if (memberList.size() == 0)
-            throw new NotFoundException("백준 연동된 회원이 없습니다.");
-
-        return memberList;
-    }
-
-    //-- find by id --//
-    public Member findById(Long id) {
-        Optional<Member> byId = memberRepositoryPort.findById(id);
-
-        if (byId.isPresent())
-            return byId.get();
-
-        throw new NotFoundException("존재하지 않는 id / id = " + id);
-    }
-
-    //-- find by member id list --//
-    public List<MemberDto> findByMyStudyList(List<Long> memberIds, String status) {
-        return memberRepositoryPort.findByMemberList(memberIds, status);
-    }
-
-    //-- find by 백준 name --//
-    public Member findByBaekJoonName(String baekJoonName) {
-        Optional<Member> byBaekJoonName = memberRepositoryPort.findByBaekJoonName(baekJoonName);
-
-        if (byBaekJoonName.isPresent())
-            return byBaekJoonName.get();
-
-        throw new NotFoundException("존재하지 않는 백준 name / name = " + baekJoonName);
-    }
-
-    //-- find all snapshot / 삭제 예정 --//
-    public List<MemberSnapshot> findAllSnapshot(Member member) {
-        return snapshotQueryRepository.findByMemberId(member);
-    }
-
-    //-- find today snapshot --//
-    public MemberSnapshot findTodaySnapshot(Member member) {
-        List<MemberSnapshot> snapshots = member.getSnapshotList();
-
-        if (snapshots.size() == 0)
-            throw new NotFoundException("백준 연동이 되어있지 않은 회원 입니다.");
-
-        return member.getSnapshotList().get(snapshots.size() - 1);
-    }
-
-    //-- find member ranking --//
-    public List<MemberDto> findMemberRanking(int page, int content) {
-        return memberRepositoryPort.findMemberRanking(page, content);
-    }
-
 
     /**
      * * UPDATE METHOD **
@@ -188,80 +69,7 @@ public class MemberService {
      * ranking 수동 업데이트
      */
 
-    //-- nickname, about, profile img 수정 --//
-    @Transactional
-    public Member update(UpdateReqDto dto, MultipartFile img) {
-        Member member = this.findById(dto.getId());
-        String imgUrl = this.s3Upload(img, dto.getId());
 
-        Member updateMember = member.update(
-                dto.getNickname(),
-                dto.getAbout(),
-                imgUrl
-        );
-        return memberRepositoryPort.save(updateMember);
-    }
-
-    //-- nickname, about 수정 --//
-    @Transactional
-    public Member updateProfile(UpdateReqDto dto) {
-        Member member = this.findById(dto.getId())
-                .updateProfile(
-                        dto.getNickname(),
-                        dto.getAbout()
-                );
-        return memberRepositoryPort.save(member);
-    }
-
-    //-- update my study --//
-    @Transactional
-    public Member updateMyStudy(MyStudyReqDto dto) {
-        Member member = this.findById(dto.getMemberId());
-
-        if (member.getMyStudies().contains(dto.getMyStudyId()))
-            throw new InvalidDuplicateException("이미 등록된 my study / my study id = " + dto.getMyStudyId());
-
-        return memberRepositoryPort.save(member.updateMyStudy(dto.getMyStudyId()));
-    }
-
-    //-- delete my study --//
-    @Transactional
-    public Member deleteMyStudy(MyStudyReqDto dto) {
-        Member member = this.findById(dto.getMemberId());
-
-        if (!member.getMyStudies().contains(dto.getMyStudyId()))
-            throw new NotFoundException("존재하지 않는 my study id / id = " + dto.getMyStudyId());
-
-        member.getMyStudies().remove(dto.getMyStudyId());
-        return member;
-    }
-
-    //-- update lastSolvedProblemId --//
-    @Transactional
-    public Member updateLastSolved(UpdateLastSolvedReqDto dto) {
-        Member member = this.findById(dto.getMemberId());
-        return memberRepositoryPort.save(member.updateLastSolved(dto.getProblemId()));
-    }
-
-
-    //-- update profile img --//
-    @Transactional
-    public Member updateImg(MultipartFile img, Long id) {
-        Member member = this.findById(id);
-
-        String profileImg = s3Upload(img, id);
-
-        return memberRepositoryPort.save(member.updateProfileImg(profileImg));
-    }
-
-    @Transactional
-    public Member connectBaekjoon(Long id, String name) {
-
-        this.findById(id);
-        RsData<ConBaekjoonResDto> resDto = solvedAcClient.validName(name);
-        publisher.publishEvent(new ConBjEvent(this, id, name, resDto.getData()));
-        return this.findById(id);
-    }
 
     //-- event : 백준 연동 --//
     public String conBj(ConBjEvent event) {
@@ -282,33 +90,9 @@ public class MemberService {
         return memberRepositoryPort.save(updateMember).getBaekJoonName();
     }
 
-    //-- event : solved count update --//
-    public void addSolvedCount(AddSolvedCountEvent event) {
-
-        Member member = this.findById(event.getId());
-
-        BaekJoonDto dto = new BaekJoonDto(event);
-        String today = LocalDateTime.now().getDayOfWeek().toString();
-        this.updateSnapshot(member, dto, today);
-
-        memberRepositoryPort.save(member.updateSolvedCount(event));
-    }
 
     //-- kafka 대신 임시용 api --//
-    @Transactional
-    public Member addSolvedCount(SolvedCountReqDto reqDto) {
 
-        Member member = this.findById(reqDto.getId());
-
-        if (member.getBaekJoonName() == null)
-            throw new NotFoundException("백준 연동 아이디가 없는 회원입니다.");
-
-        BaekJoonDto dto = new BaekJoonDto(reqDto);
-        String today = LocalDateTime.now().plusDays(reqDto.getAdd()).getDayOfWeek().toString();
-        this.updateSnapshot(member, dto, today);
-
-        return memberRepositoryPort.save(member.updateSolvedCount(reqDto));
-    }
 
     //-- event : when create my study --//
     public void createMyStudy(CreateMyStudyEvent event) {
@@ -321,25 +105,6 @@ public class MemberService {
         this.updateSnapshot(member, dto, today);
     }
 
-    // update snapshot //
-    private void updateSnapshot(Member member, BaekJoonDto dto, String today) {
-        List<MemberSnapshot> snapshots = member.getSnapshotList();
-
-        if (snapshots.size() == 0 || !snapshots.get(snapshots.size() - 1).getDayOfWeek().equals(today)) {
-            MemberSnapshot snapshot = MemberSnapshot.create(member, dto, today);
-            snapshotRepository.save(snapshot);
-
-        } else {
-            MemberSnapshot snapshot = snapshots.get(snapshots.size() - 1).update(dto);
-            snapshotRepository.save(snapshot);
-        }
-
-        if (snapshots.size() == 8) {
-            MemberSnapshot snapshot = snapshots.get(0);
-            snapshots.remove(snapshot);
-            snapshotRepository.delete(snapshot);
-        }
-    }
 
     // S3 upload //
     private String s3Upload(MultipartFile file, Long id) {
@@ -369,14 +134,6 @@ public class MemberService {
         return url;
     }
 
-    //-- ranking 수동 업데이트 --//
-    @Transactional
-    public void updateRanking() {
-        List<Member> memberList = memberRepositoryPort.findMemberRanking();
-
-        for (int i = 0; i < memberList.size(); i++)
-            memberList.get(i).updateRanking(i + 1);
-    }
 
     /**
      * 소셜 로그인 추가
@@ -394,33 +151,6 @@ public class MemberService {
         } catch (NotFoundException e) {
             return socialJoin(providerType, username, "", email, profileImg); // 최초 1회 실행
         }
-        return member;
-    }
-
-
-    @Transactional
-    public Member socialJoin(String providerType, String username, String password, String email, String profileImg) {
-        Member member = null;
-
-//        try {
-//            member = findByUsername(username);
-//            return member;
-//        } catch (NotFoundException e) {
-        JoinReqDto dto = new JoinReqDto();
-        dto.setUsername(username);
-        dto.setEmail(email);
-        dto.setPassword(password);
-//            JoinReqDto dto = JoinReqDto.createJoinDto(username, ,password, email);
-        dto.setProvider(providerType);
-        dto.setProfileImage(profileImg);
-//            dto.setToken(token);
-        dto.setNickName(username);
-
-        member = create(dto);
-//        }
-
-        memberRepositoryPort.save(member);
-
         return member;
     }
 }
