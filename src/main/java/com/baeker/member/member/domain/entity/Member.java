@@ -13,8 +13,6 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -199,6 +197,7 @@ public class Member extends BaseEntity {
     public Map<String, Object> toClaims() {
         return Map.of(
                 "id", getId(),
+                "nickName", getNickname(),
                 "username", getUsername(),
                 "role", getRole()
         );
