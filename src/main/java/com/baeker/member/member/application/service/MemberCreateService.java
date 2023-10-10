@@ -6,6 +6,7 @@ import com.baeker.member.member.application.port.in.MemberCreateUseCase;
 import com.baeker.member.member.application.port.in.MemberQueryUseCase;
 import com.baeker.member.member.application.port.out.persistence.MemberRepositoryPort;
 import com.baeker.member.member.domain.entity.Member;
+import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.JoinReqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,18 @@ public class MemberCreateService implements MemberCreateUseCase {
     }
 
     @Override
+    public Member whenSocialLogin(String providerType, String username, String email, String profileImg) {
+
+        Member member = null;
+        try {
+            member = memberQueryUseCase.findByUsername(username);
+        } catch (NotFoundException e) {
+            return socialJoin(providerType, username, "", email, profileImg); // 최초 1회 실행
+        }
+        return member;
+    }
+
+    @Override
     public Member socialJoin(String providerType, String username, String password, String email, String profileImg) {
         JoinReqDto dto = new JoinReqDto();
         dto.setUsername(username);
@@ -43,5 +56,10 @@ public class MemberCreateService implements MemberCreateUseCase {
         Member member = create(dto);
         memberRepositoryPort.save(member);
         return member;
+    }
+    @Override
+    public void createMyStudy(CreateMyStudyEvent event) {
+        Member member = memberQueryUseCase.findById(event.getMemberId());
+        member.addMyStudy(event.getMyStudyId());
     }
 }

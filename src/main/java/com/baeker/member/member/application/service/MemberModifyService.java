@@ -1,21 +1,30 @@
 package com.baeker.member.member.application.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.baeker.member.base.error.exception.InvalidDuplicateException;
 import com.baeker.member.base.error.exception.NotFoundException;
 import com.baeker.member.base.request.RsData;
+import com.baeker.member.base.s3.S3Config;
 import com.baeker.member.member.application.port.in.MemberModifyUseCase;
 import com.baeker.member.member.application.port.in.MemberQueryUseCase;
 import com.baeker.member.member.application.port.out.persistence.MemberRepositoryPort;
+import com.baeker.member.member.application.port.out.persistence.SnapshotRepository;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
 import com.baeker.member.member.in.event.ConBjEvent;
+import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.*;
+import com.baeker.member.member.out.feign.SolvedAcClient;
 import com.baeker.member.member.out.resDto.ConBaekjoonResDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +34,12 @@ import java.util.List;
 public class MemberModifyService implements MemberModifyUseCase {
     private final MemberRepositoryPort memberRepositoryPort;
     private final MemberQueryUseCase memberQueryUseCase;
+    private final S3Config s3Config;
+    private final AmazonS3 amazonS3;
+    private final SnapshotRepository snapshotRepository;
+    private final SolvedAcClient solvedAcClient;
+    private final ApplicationEventPublisher publisher;
+
 
     @Override
     public Member update(UpdateReqDto dto, MultipartFile img) {
@@ -74,19 +89,13 @@ public class MemberModifyService implements MemberModifyUseCase {
         return memberRepositoryPort.save(member.updateProfileImg(profileImg));
     }
 
-    /**
-     * 확인 필요
-     * @param id
-     * @param name
-     * @return
-     */
     @Override
     public Member connectBaekjoon(Long id, String name) {
 
         memberQueryUseCase.findById(id);
         RsData<ConBaekjoonResDto> resDto = solvedAcClient.validName(name);
         publisher.publishEvent(new ConBjEvent(this, id, name, resDto.getData()));
-        return this.findById(id);
+        return memberQueryUseCase.findById(id);
     }
 
     @Override
@@ -129,5 +138,57 @@ public class MemberModifyService implements MemberModifyUseCase {
 
         for (int i = 0; i < memberList.size(); i++)
             memberList.get(i).updateRanking(i + 1);
+    }
+
+    // S3 upload //
+    private String s3Upload(MultipartFile file, Long id) {
+
+        String name = "profile_img" + id;
+        String url = "https://s3." + s3Config.getRegion()
+                + ".amazonaws.com/" + s3Config.getBucket()
+                + "/" + s3Config.getStorage()
+                + "/" + name;
+
+        try {
+            ObjectMetadata data = new ObjectMetadata();
+            data.setContentType(file.getContentType());
+            data.setContentLength(file.getSize());
+
+            amazonS3.putObject(new PutObjectRequest(
+                    s3Config.getBucket(),
+                    s3Config.getStorage() + "/" + name,
+                    file.getInputStream(),
+                    data
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            throw new NullPointerException("프로필 이미지가 없습니다.");
+        }
+        return url;
+    }
+
+    @Override
+    public String conBj(ConBjEvent event) {
+
+        Member member = memberQueryUseCase.findById(event.getId());
+
+        try {
+            memberQueryUseCase.findByBaekJoonName(event.getBaekJoonName());
+            throw new InvalidDuplicateException(event.getBaekJoonName() + "은 이미 연동된 백준 id 입니다.");
+        } catch (NotFoundException e) {
+        }
+
+        BaekJoonDto dto = new BaekJoonDto(event);
+        String today = LocalDateTime.now().getDayOfWeek().toString();
+        this.updateSnapshot(member, dto, today);
+
+        Member updateMember = member.connectBaekJoon(event);
+        return memberRepositoryPort.save(updateMember).getBaekJoonName();
+    }
+
+    public void createMyStudy(CreateMyStudyEvent event) {
+        Member member = memberQueryUseCase.findById(event.getMemberId());
+        member.addMyStudy(event.getMyStudyId());
     }
 }

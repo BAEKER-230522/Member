@@ -3,7 +3,6 @@ package com.baeker.member.global.security.handler;
 import com.baeker.member.global.security.jwt.JwtTokenProvider;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
-import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

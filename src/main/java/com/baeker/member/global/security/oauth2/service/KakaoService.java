@@ -5,7 +5,6 @@ import com.baeker.member.global.security.jwt.JwtTokenProvider;
 import com.baeker.member.global.security.oauth2.users.dto.SocialLoginResponse;
 import com.baeker.member.global.security.oauth2.model.enums.OAuth2Config;
 import com.baeker.member.member.domain.entity.Member;
-import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nimbusds.jwt.JWT;

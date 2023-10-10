@@ -16,5 +16,4 @@ public interface MemberRepositoryPort extends JpaRepository<Member, Long>, Membe
     Optional<Member> findByBaekJoonName(String BaekJoonName);
 
     Page<Member> findAll(Pageable pageable);
-
 }

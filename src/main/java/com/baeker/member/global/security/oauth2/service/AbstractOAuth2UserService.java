@@ -10,7 +10,6 @@ import com.baeker.member.global.security.oauth2.model.providers.ProviderUser;
 import com.baeker.member.global.security.oauth2.repository.UserRepository;
 import com.baeker.member.global.security.oauth2.users.User;
 import com.baeker.member.member.domain.entity.Member;
-import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
