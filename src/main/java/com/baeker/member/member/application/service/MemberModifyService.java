@@ -13,6 +13,7 @@ import com.baeker.member.member.application.port.out.persistence.MemberRepositor
 import com.baeker.member.member.application.port.out.persistence.SnapshotRepository;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.entity.MemberSnapshot;
+import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.*;
@@ -190,5 +191,16 @@ public class MemberModifyService implements MemberModifyUseCase {
     public void createMyStudy(CreateMyStudyEvent event) {
         Member member = memberQueryUseCase.findById(event.getMemberId());
         member.addMyStudy(event.getMyStudyId());
+    }
+    @Override
+    public void addSolvedCount(AddSolvedCountEvent event) {
+
+        Member member = memberQueryUseCase.findById(event.getId());
+
+        BaekJoonDto dto = new BaekJoonDto(event);
+        String today = LocalDateTime.now().getDayOfWeek().toString();
+        this.updateSnapshot(member, dto, today);
+
+        memberRepositoryPort.save(member.updateSolvedCount(event));
     }
 }

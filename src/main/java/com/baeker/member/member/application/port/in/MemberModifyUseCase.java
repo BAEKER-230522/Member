@@ -1,6 +1,7 @@
 package com.baeker.member.member.application.port.in;
 
 import com.baeker.member.member.domain.entity.Member;
+import com.baeker.member.member.in.event.AddSolvedCountEvent;
 import com.baeker.member.member.in.event.ConBjEvent;
 import com.baeker.member.member.in.event.CreateMyStudyEvent;
 import com.baeker.member.member.in.reqDto.MyStudyReqDto;
@@ -17,6 +18,7 @@ public interface MemberModifyUseCase {
     Member updateImg(MultipartFile img, Long id);
     Member connectBaekjoon(Long id, String name);
     Member addSolvedCount(SolvedCountReqDto reqDto);
+    void addSolvedCount(AddSolvedCountEvent event);
     void updateRanking();
     String conBj(ConBjEvent event);
     void createMyStudy(CreateMyStudyEvent event);

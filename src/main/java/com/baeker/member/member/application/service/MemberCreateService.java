@@ -21,7 +21,6 @@ public class MemberCreateService implements MemberCreateUseCase {
 
     @Override
     public Member create(JoinReqDto dto) {
-
         try {
             memberQueryUseCase.findByUsername(dto.getUsername());
             throw new InvalidDuplicateException("이미 존재하는 username 입니다.");

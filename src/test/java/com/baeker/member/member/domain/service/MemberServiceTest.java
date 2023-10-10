@@ -40,8 +40,6 @@ import static org.mockito.Mockito.when;
 class MemberServiceTest {
 
     @Autowired
-    private MemberService memberService;
-    @Autowired
     private ApplicationEventPublisher publisher;
     @Autowired
     private SnapshotRepository snapshotRepository;
