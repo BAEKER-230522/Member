@@ -9,10 +9,12 @@ import com.baeker.member.member.in.reqDto.PageReqDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.SchedulerResDto;
 import com.baeker.member.member.in.resDto.SnapshotResDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -145,5 +147,15 @@ public class MemberFindController {
 
         log.info("랭킹 응답 완료");
         return RsData.successOf(dtoList);
+    }
+
+    //-- con baek joon check --//
+    @Hidden
+    @GetMapping("/test/baekjoon")
+    public ResponseEntity<Boolean> isConnectBaekJoon(
+            @RequestParam Long memberId
+    ) {
+        log.info("member id = {}", memberId);
+        return ResponseEntity.ok(true);
     }
 }

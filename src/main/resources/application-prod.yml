@@ -1,27 +1,24 @@
-spring:
-  data:
-    redis:
-      port: 6379
-      host: bk-redis.1ll.ca
-      password: ENC(GBrC1cw8fEgPRtmFQPTaZA==)
-
-  config:
-    activate:
-      on-profile: prod
-
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://database-1.cfjq3dvnnxge.ap-northeast-2.rds.amazonaws.com:3306/member?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ENC(plDde76MscNwKMt9v4A6Rw==)
-    password: ENC(OH+qshDPtFh1h1gDdWExzz/t0BlOzVbo)
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-
 custom:
   feign:
     study: http://study:8082/api/study
-  storage: prod
-  bucket: baeker-prod
 
+  s3:
+    storage: prod
+    bucket: baeker-prod
+
+  redis:
+    host: bk-redis.1ll.ca
+    pw: ENC(GBrC1cw8fEgPRtmFQPTaZA==)
+
+  db:
+    url: jdbc:mysql://database-1.cfjq3dvnnxge.ap-northeast-2.rds.amazonaws.com:3306/member?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    usr: ENC(plDde76MscNwKMt9v4A6Rw==)
+    pw: ENC(OH+qshDPtFh1h1gDdWExzz/t0BlOzVbo)
+
+  jpa:
+    ddl-auto: update
+
+spring:
+  config:
+    activate:
+      on-profile: prod
