@@ -1,4 +1,4 @@
-package com.baeker.member.global.security.oauth2.controller;
+package com.baeker.member.member.adapter.in;
 
 import com.baeker.member.global.security.oauth2.service.KakaoService;
 import com.baeker.member.global.security.oauth2.users.dto.SocialLoginResponse;
