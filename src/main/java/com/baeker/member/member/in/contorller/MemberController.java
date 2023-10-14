@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -152,16 +153,12 @@ public class MemberController {
         return RsData.of("S-1", "성공", "총 " + member.solvedCount() + "문제 해결");
     }
 
-    //-- ranking 수동 업데이트 --//
-    @Operation(summary = "Member 랭킹 수동 업데이트 / admin 만 할 수 있도록 수정 예정")
-    @PostMapping("/v1/ranking")
-    public RsData updateRanking() {
-        log.info("member ranking 수동 update 요청 확인");
-
+    //-- ranking 업데이트 --//
+    @Operation(summary = "Member 랭킹 업데이트")
+    @PatchMapping("/v1/ranking")
+    public ResponseEntity updateRanking() {
         memberService.updateRanking();
-
-        log.info("member ranking 수동 update 완료");
-        return RsData.of("S-1", "성공");
+        return ResponseEntity.noContent().build();
     }
 
 
