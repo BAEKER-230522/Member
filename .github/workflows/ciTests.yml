@@ -1,12 +1,18 @@
 name: ciTests
 
-on:  # 우선 main 브랜치만 설정 했지만 dev 브랜치 하나 생성(건의)
+on:
   pull_request:
     branches:
       - main
       - develop
+      - dk
+      - park
   push:
-    branches:
+    branches-ignore:
+      - develop
+      - main
+      - dk
+      - park
 
 jobs:
   test:
