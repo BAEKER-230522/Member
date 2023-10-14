@@ -15,6 +15,14 @@
 
 <br>
 
+## ERD
+- Base Entity 로 부터 중복 필드를 상속받았습니다.
+- Meber 의 7일간의 문제 해결 내역을 Snapshot 에서 기록합니다.
+
+<img width="680" alt="스크린샷 2023-10-13 오후 1 47 26" src="https://github.com/BAEKER-230522/Community/assets/115536240/21b53204-e32b-4145-9215-5e32ee359ffa">
+
+<br>
+
 ## 핵심 요구사항
 ### 01 생성
 - kakao 소셜 로그인
