@@ -153,6 +153,7 @@ public class MemberController {
         return RsData.of("S-1", "성공", "총 " + member.solvedCount() + "문제 해결");
     }
 
+
     //-- ranking 업데이트 --//
     @Operation(summary = "Member 랭킹 업데이트")
     @PatchMapping("/v1/ranking")
