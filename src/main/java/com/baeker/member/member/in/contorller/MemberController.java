@@ -72,7 +72,8 @@ public class MemberController {
         return RsData.successOf(response);
     }
 
-    @Operation(summary = "닉네임, 자기 소개 업데이트")
+
+    @Operation(summary = "닉네임, 자기 소개 업데이트  ")
     @PostMapping("/v1/profile")
     public RsData<UpdateResDto> updateProfile(
             @RequestBody @Valid UpdateReqDto dto
