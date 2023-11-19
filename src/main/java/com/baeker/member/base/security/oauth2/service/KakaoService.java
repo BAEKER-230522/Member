@@ -2,7 +2,7 @@ package com.baeker.member.base.security.oauth2.service;
 
 import com.baeker.member.base.error.exception.jwt.JwtCreateException;
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
-import com.baeker.member.base.security.oauth2.users.dto.SocialLoginResponse;
+import com.baeker.member.base.security.oauth2.users.dto.SocialLoginDto;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientPropertiesRegistrationAdapter;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -61,7 +59,7 @@ public class KakaoService{
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public SocialLoginResponse kakaoLogin(String code, String redirectUri) {
+    public SocialLoginDto kakaoLogin(String code, String redirectUri) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add(CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
@@ -70,18 +68,18 @@ public class KakaoService{
 
         String response = restTemplate.postForObject(tokenUri, request, String.class);
         log.info("카카오 로그인 response : {}", response);
-        SocialLoginResponse socialLoginResponse = null;
+        SocialLoginDto socialLoginDto = null;
         try {
-            socialLoginResponse = getOidcTokenId(response, redirectUri);
+            socialLoginDto = getOidcTokenId(response, redirectUri);
 
         } catch (JsonProcessingException | ParseException e) {
             throw new JwtCreateException(JWT_CREATE_EXCEPTION.getMessage());
         }
-        return socialLoginResponse;
+        return socialLoginDto;
     }
 
 
-    private SocialLoginResponse getOidcTokenId(String response, String redirectUri) throws JsonProcessingException, ParseException {
+    private SocialLoginDto getOidcTokenId(String response, String redirectUri) throws JsonProcessingException, ParseException {
         JSONObject jsonObject = Json.mapper().readValue(response, JSONObject.class);
         String idToken = jsonObject.get("id_token").toString();
         String oauth2TokenId = jsonObject.get("access_token").toString();
@@ -101,7 +99,7 @@ public class KakaoService{
         Member byUsername = memberService.findByUsername(oidcUser.getName());
         JwtTokenResponse token = jwtTokenProvider.genAccessTokenAndRefreshToken(byUsername);
         boolean baekJoonConnect = byUsername.getBaekJoonName() != null;
-        return new SocialLoginResponse(token.accessToken(), token.refreshToken(), byUsername.getId(), baekJoonConnect);
+        return new SocialLoginDto(token.accessToken(), token.refreshToken(), byUsername.getId(), baekJoonConnect);
     }
 
     private ClientRegistration setClientRegistration(String redirectUri, String[] scope) {
