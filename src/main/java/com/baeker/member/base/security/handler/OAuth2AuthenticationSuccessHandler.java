@@ -1,13 +1,13 @@
 package com.baeker.member.base.security.handler;
 
 import com.baeker.member.base.security.jwt.JwtTokenProvider;
-import com.baeker.member.base.security.oauth2.service.CustomOidcUserService;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -55,11 +52,16 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         Long memberId = member.getId();
         boolean baekJoonConnect = false;
         if (member.getBaekJoonName() != null) baekJoonConnect = true;
-        String url = FRONT_URL + "/login" +"?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
-                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8) + "&memberId=" + memberId
+        String url = FRONT_URL + "/login"
+//                +"?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
+//                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)
+                + "&memberId=" + memberId
                 + "&baekJoonConnect=" + baekJoonConnect;
 //        String url = FRONT_URL;
-//        response.addHeader("Authorization", "Bearer " + accessToken);
+        Cookie accessTokenCookie = new Cookie("Authorization", "Bearer " + accessToken);
+        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
         response.sendRedirect(url);
     }
 }
