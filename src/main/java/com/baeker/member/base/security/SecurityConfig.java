@@ -1,35 +1,22 @@
 package com.baeker.member.base.security;
 
 
-
-
 import com.baeker.member.base.security.handler.OAuth2AuthenticationSuccessHandler;
-import com.baeker.member.base.security.oauth2.service.CustomOAuth2UserService;
 import com.baeker.member.base.security.oauth2.service.CustomOidcUserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint;
 
 import java.net.URI;
 
@@ -71,7 +58,7 @@ public class SecurityConfig {
                 .cors().disable()
                 .authorizeHttpRequests().requestMatchers("/**").permitAll().and()
 //                .oauth2Login(oauth2 -> oauth2
-//                            .authorizationEndpoint().baseUri("oauth2/authorize/**")
+//                            .authorizationEndpoint().baseUri("/login/oauth2/**")
 //        .and()
 //                            .userInfoEndpoint(userInfo -> userInfo
 //                                .oidcUserService(oidcUserService))
