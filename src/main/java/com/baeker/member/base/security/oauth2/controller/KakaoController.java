@@ -1,6 +1,7 @@
 package com.baeker.member.base.security.oauth2.controller;
 
 import com.baeker.member.base.security.oauth2.service.KakaoService;
+import com.baeker.member.base.security.oauth2.users.dto.SocialLoginDto;
 import com.baeker.member.base.security.oauth2.users.dto.SocialLoginResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,13 +18,17 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
     @GetMapping("/kakao")
-    public void kakaoLogin(HttpServletResponse response, String code, String redirectUri) {
-        SocialLoginResponse socialLoginResponse = kakaoService.kakaoLogin(code, redirectUri);
-        String accessToken = socialLoginResponse.accessToken();
-        String refreshToken = socialLoginResponse.refreshToken();
+    public SocialLoginResponse kakaoLogin(HttpServletResponse response, String code, String redirectUri) {
+        SocialLoginDto dto = kakaoService.kakaoLogin(code, redirectUri);
+        String accessToken = dto.accessToken();
+        String refreshToken = dto.refreshToken();
+        boolean baekJoonConnect = dto.isBaekJoonConnect();
+        Long memberId = dto.memberId();
+
         Cookie accessTokenCookie = new Cookie("Authorization", "Bearer " + accessToken);
         Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
+        return new SocialLoginResponse(memberId, baekJoonConnect);
     }
 }
