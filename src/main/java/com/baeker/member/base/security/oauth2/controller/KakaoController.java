@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login/oauth2")
@@ -24,11 +27,9 @@ public class KakaoController {
         String refreshToken = dto.refreshToken();
         boolean baekJoonConnect = dto.isBaekJoonConnect();
         Long memberId = dto.memberId();
-
-        Cookie accessTokenCookie = new Cookie("Authorization", "Bearer " + accessToken);
-        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
-        response.addCookie(accessTokenCookie);
+        String encodeRefreshToken = URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
+        Cookie refreshTokenCookie = new Cookie("RefreshToken", encodeRefreshToken);
         response.addCookie(refreshTokenCookie);
-        return new SocialLoginResponse(memberId, baekJoonConnect);
+        return new SocialLoginResponse(accessToken, memberId, baekJoonConnect);
     }
 }
