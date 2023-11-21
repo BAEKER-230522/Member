@@ -7,7 +7,6 @@ import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -58,10 +57,10 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                 + "&memberId=" + memberId
                 + "&baekJoonConnect=" + baekJoonConnect;
 //        String url = FRONT_URL;
-        Cookie accessTokenCookie = new Cookie("Authorization", "Bearer " + accessToken);
-        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
-        response.addCookie(accessTokenCookie);
-        response.addCookie(refreshTokenCookie);
+//        Cookie accessTokenCookie = new Cookie("Authorization", "Bearer " + accessToken);
+//        Cookie refreshTokenCookie = new Cookie("RefreshToken", refreshToken);
+//        response.addCookie(accessTokenCookie);
+//        response.addCookie(refreshTokenCookie);
         response.sendRedirect(url);
     }
 }
