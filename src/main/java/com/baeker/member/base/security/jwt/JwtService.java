@@ -1,10 +1,12 @@
 package com.baeker.member.base.security.jwt;
 
+import com.baeker.member.base.error.exception.NotFoundException;
 import com.baeker.member.base.error.exception.jwt.RefreshTokenExpirationException;
 import com.baeker.member.base.util.redis.RedisUt;
 import com.baeker.member.member.domain.entity.Member;
 import com.baeker.member.member.domain.service.MemberService;
 import com.baeker.member.member.in.resDto.JwtTokenResponse;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,12 +52,10 @@ public class JwtService {
 
     // 새로운 액세스 토큰 발급하는 메서드
     public JwtTokenResponse createNewAccessToken(String refreshToken) throws IOException {
-        Member member = null;
-
         Map<String, Object> claims = jwtProvider.getClaims(refreshToken);
 
         long id = (int) claims.get("id");
-        member = memberService.findById(id);
+        Member member = memberService.findById(id);
         String redisSelectId = String.valueOf(id);
         Long ttl = redisUt.getExpire(redisSelectId);
         log.info("memberId: {}", redisSelectId);
@@ -79,5 +79,15 @@ public class JwtService {
         context.setAuthentication(authentication);
         // 스프링 시큐리티에 context 등록
         SecurityContextHolder.setContext(context);
+    }
+
+    public JwtTokenResponse updateToken(Cookie[] cookies) throws IOException {
+        for (Cookie cookie : cookies) {
+            if ("refreshToken".equals(cookie.getName())) {
+                String refreshToken = cookie.getValue();
+                return this.createNewAccessToken(refreshToken);
+            }
+        }
+        throw new NotFoundException("Cookie 에 token 이 없음.");
     }
 }
