@@ -10,6 +10,7 @@ import com.baeker.member.member.in.resDto.LastSolvedDto;
 import com.baeker.member.member.in.resDto.MemberDto;
 import com.baeker.member.member.in.resDto.UpdateResDto;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -169,9 +170,9 @@ public class MemberController {
      */
     @PostMapping("/v1/accessToken/expired")
     public RsData<JwtTokenResponse> accessTokenExpired(
-            @RequestHeader("refreshToken") @Valid String refreshToken
+            HttpServletRequest req
     ) throws IOException {
-        JwtTokenResponse newAccessToken = jwtService.createNewAccessToken(refreshToken);
+        JwtTokenResponse newAccessToken = jwtService.updateToken(req.getCookies());
         log.info(newAccessToken.accessToken() + "new access token 발급 완료");
         return RsData.successOf(newAccessToken);
     }
